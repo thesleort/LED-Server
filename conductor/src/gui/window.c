@@ -1,8 +1,9 @@
 #include <gtk/gtk.h>
 
-static void
-activate(GtkApplication *app,
-         gpointer user_data) {
+#include "gui/window.h"
+
+static void activate(GtkApplication *app,
+                     gpointer user_data) {
     GtkWidget *window;
 
     window = gtk_application_window_new(app);
