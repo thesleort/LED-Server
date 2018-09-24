@@ -3,8 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceRoot}/**",
-                "/usr/lib/x86_64-linux-gnu/glib-2.0/include/",
+                "${workspaceRoot}/conductor/include/**",
+                "/usr/lib/x86_64-linux-gnu/glib-2.0/include/**",
                 "/usr/include/**"
             ],
             "defines": [],

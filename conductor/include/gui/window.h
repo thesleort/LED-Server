@@ -1,5 +1,5 @@
-#ifndef __WINDOW_H
-#define __WINDOW_H
+#ifndef __WINDOW_GTK_H
+#define __WINDOW_GTK_H
 
 #include <gtk/gtk.h>
 
