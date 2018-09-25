@@ -2,6 +2,7 @@
 
 #include "gui/window.h"
 #include "gui/webview.h"
+#include "gui/stream_playback.h"
 
 static void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
@@ -17,11 +18,12 @@ static void activate(GtkApplication *app, gpointer user_data) {
 int main(int argc, char **argv) {
     GtkApplication *app;
     int status;
+    
+    decklink_stream_gst();
+    // app = gtk_application_new("led.server.conductor", G_APPLICATION_FLAGS_NONE);
+    // g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+    // status = g_application_run(G_APPLICATION(app), argc, argv);
+    // g_object_unref(app);
 
-    app = gtk_application_new("led.server.conductor", G_APPLICATION_FLAGS_NONE);
-    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION(app), argc, argv);
-    g_object_unref(app);
-
-    return status;
+    // return status;
 }
