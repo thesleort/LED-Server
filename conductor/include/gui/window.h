@@ -8,4 +8,5 @@ static void activate(GtkApplication *app,
 
 main(int argc, char **argv);
 
+
 #endif

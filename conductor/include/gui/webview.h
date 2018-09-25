@@ -4,7 +4,7 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
-void add_webview(GtkWidget *window);
+void add_webview(GtkWidget *window, GtkWidget *area);
 
 static void url_entry_reset(GtkWidget *widget, gpointer data);
 static void url_entry_query(GtkWidget *widget, gpointer data);

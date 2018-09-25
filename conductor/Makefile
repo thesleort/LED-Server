@@ -5,7 +5,7 @@ SRC_DIR = src
 OBJ_DIR = build
 INC_DIR = include
 
-PKG = gtk+-3.0 webkit2gtk-4.0 gstreamer-1.0
+PKG = gtk+-3.0 webkit2gtk-4.0 gstreamer-1.0 gstreamer-video-1.0
 
 LIB = $(LDFLAGS)
 
@@ -28,7 +28,7 @@ MODULES = $(filter-out $(MOD_DIR)/README.md $(wildcard $(SRC_DIR)/*.c), $(wildca
 all: $(EXE)
 
 $(EXE): $(OBJ) 
-	$(CC) $(LIB) $(INC) $^ -o $@ $(LDLIBS)
+	$(CC) $(INC) $^ -o $@ $(LIB) $(LDLIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	mkdir -p $(addprefix $(OBJ_DIR)/, $(MODULES:$(SRC_DIR)/%=%))

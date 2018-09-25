@@ -2,12 +2,13 @@
 
 #include "gui/webview.h"
 
-GtkBox *grid;
+// GtkBox *grid;
 GtkEntry *url;
 GtkButton *search_btn;
 WebKitWebView *webView;
 
-void add_webview(GtkWidget *window) {
+GtkBox *webview(GtkWidget *window) {
+    GtkBox *grid = (GtkBox*) malloc(sizeof(GtkBox));
 
     webView = WEBKIT_WEB_VIEW(webkit_web_view_new());
     webkit_web_view_load_uri(webView, "http://localhost/");
@@ -29,7 +30,7 @@ void add_webview(GtkWidget *window) {
 
     gtk_entry_set_text(url, webkit_web_view_get_uri(webView));
 
-    gtk_container_add(GTK_CONTAINER(window), GTK_GRID(grid));
+    // gtk_container_add(GTK_CONTAINER(window), GTK_GRID(grid));
 
     g_signal_connect(search_btn, "clicked", G_CALLBACK(url_entry_query), NULL);
     g_signal_connect(url, "activate", G_CALLBACK(url_entry_query), NULL);
@@ -39,9 +40,9 @@ void add_webview(GtkWidget *window) {
 
 
 
-
     // Will get input from mouse and keyboard.
     // gtk_widget_grab_focus(GTK_WIDGET(webView));
+    return &grid;
 }
 
 static void url_entry_query(GtkWidget *widget, gpointer data) {
