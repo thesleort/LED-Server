@@ -10,7 +10,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
     window = gtk_application_window_new(app);
     // window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Window");
-    gtk_window_set_default_size(GTK_WINDOW(window), 1900, 1000);
+    gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
     // add_webview(window);
     tab(window);
     // decklink_stream_gst(window);
@@ -31,11 +31,14 @@ int main(int argc, char **argv) {
 
 void tab(GtkWidget *window) {
     GtkWidget *tab;
+    GtkGrid *grid;
+
+    grid = malloc(sizeof(GtkGrid));
 
     tab = gtk_notebook_new();
 
     
-    gtk_notebook_append_page(tab, webview(window), "Webview");
+    gtk_notebook_append_page(tab, grid, "Webview");
     // gtk_notebook_append_page()
 
     gtk_container_add(window, tab);
