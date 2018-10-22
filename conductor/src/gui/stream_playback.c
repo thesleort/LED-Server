@@ -4,7 +4,7 @@
 
 #include "gui/stream_playback.h"
 
-void decklink_stream_gst(GtkWidget *window) {
+void decklink_stream_gst(GtkGrid **window) {
     custom_data data;
     GstBus *bus;
     GstStateChangeReturn ret;
@@ -33,16 +33,16 @@ void decklink_stream_gst(GtkWidget *window) {
 
     ret = gst_element_set_state(data.playbin, GST_STATE_PLAYING);
 
+    printf("streaming\n");
     g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
 
     // gtk_widget_show_all(window);
 }
 
-static void setup_stream_ui(GtkWidget *window, custom_data *data) {
+static void setup_stream_ui(GtkGrid **grid, custom_data *data) {
     GtkWidget *video_area;
     GtkWidget *main_hbox;
     GtkWidget *main_box;
-    GtkBox *grid;
 
     // video_area = gtk_drawing_area_new();
     video_area = GTK_DRAWING_AREA(gtk_drawing_area_new());
@@ -51,15 +51,15 @@ static void setup_stream_ui(GtkWidget *window, custom_data *data) {
     g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data);
     g_signal_connect (video_area, "draw", G_CALLBACK (draw_cb), data);
 
-    grid = GTK_GRID(gtk_grid_new());
+    // grid = GTK_GRID(gtk_grid_new());
 
     gtk_widget_set_size_request(video_area, 896, 512);
 
     gtk_grid_attach(grid, video_area, 0, 0, 100, 1);
 
-    gtk_container_add(GTK_CONTAINER(window), GTK_GRID(grid));
+    // gtk_container_add(GTK_CONTAINER(grid), GTK_GRID(grid));
 
-    gtk_widget_show_all(window);
+    // gtk_widget_show_all(grid);
 
     // main_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     // gtk_box_pack_start(GTK_BOX(main_hbox), video_area, TRUE, TRUE, 0);

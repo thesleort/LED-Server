@@ -6,6 +6,8 @@
 
 void add_webview(GtkWidget *window, GtkWidget *area);
 
+void webview(GtkGrid **grid);
+
 static void url_entry_reset(GtkWidget *widget, gpointer data);
 static void url_entry_query(GtkWidget *widget, gpointer data);
 static void destroyWindowCb(GtkWidget* widget, GtkWidget* window);

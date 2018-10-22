@@ -9,6 +9,11 @@
 #include <gdk/gdkx.h>
 #include <gst/video/videooverlay.h>
 
+typedef struct _streamData {
+  gboolean is_live;
+  GstElement *pipeline;
+  GMainLoop *loop;
+} streamData;
 
 typedef struct _custom_data {
     GstElement *playbin; /* Our one and only pipeline */
@@ -21,9 +26,9 @@ typedef struct _custom_data {
     gint64 duration;
 } custom_data;
 
-void decklink_stream_gst(GtkWidget *window);
+void decklink_stream_gst(GtkGrid **window);
 
-static void setup_stream_ui(GtkWidget *window, custom_data *data);
+static void setup_stream_ui(GtkGrid **grid, custom_data *data);
 
 static void tags_cb(GstElement *playbin, gint stream, custom_data *data);
 

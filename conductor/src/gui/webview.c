@@ -7,15 +7,18 @@ GtkEntry *url;
 GtkButton *search_btn;
 WebKitWebView *web_view;
 
-void webview(GtkGrid *grid) {
-    url = malloc(sizeof(GtkEntry));
-    search_btn = malloc(sizeof(GtkButton));
-    web_view = malloc(sizeof(WebKitWebView));
+void webview(GtkGrid **grid) {
+    // url = malloc(sizeof(GtkEntry));
+    url = gtk_entry_new();
+    search_btn = gtk_button_new();
+    web_view = webkit_web_view_new();
+    // web_view = malloc(sizeof(WebKitWebView));
+    printf("Webview setup\n");
 
     web_view = WEBKIT_WEB_VIEW(webkit_web_view_new());
     webkit_web_view_load_uri(web_view, "http://localhost/");
 
-    grid = GTK_GRID(gtk_grid_new());
+    // grid = GTK_GRID(gtk_grid_new());
     url = GTK_ENTRY(gtk_entry_new());
     search_btn = GTK_BUTTON(gtk_button_new_with_label("Connect"));
 
