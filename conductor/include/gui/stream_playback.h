@@ -10,10 +10,13 @@
 #include <gst/video/videooverlay.h>
 
 typedef struct _streamData {
-  gboolean is_live;
-  GstElement *pipeline;
-  GMainLoop *loop;
-} streamData;
+    gboolean is_live;
+    GstElement *pipeline;
+    GMainLoop *loop;
+    GstState state; /* Current state of the pipeline */
+    gint64 duration;
+
+} stream_data;
 
 typedef struct _custom_data {
     GstElement *playbin; /* Our one and only pipeline */
@@ -26,16 +29,18 @@ typedef struct _custom_data {
     gint64 duration;
 } custom_data;
 
-void decklink_stream_gst(GtkGrid **window);
+void decklink_stream_gst(GtkGrid **grid, GtkWindow **window);
 
-static void setup_stream_ui(GtkGrid **grid, custom_data *data);
+static void setup_stream_ui(GtkGrid **grid, GtkWindow **window, stream_data *data);
 
-static void tags_cb(GstElement *playbin, gint stream, custom_data *data);
+static void tags_cb(GstElement *playbin, gint stream, stream_data *data);
 
-static gboolean refresh_ui (custom_data *data);
+static gboolean refresh_ui(stream_data *data);
 
-static void realize_cb(GtkWidget *widget, custom_data *data);
+static void realize_cb(GtkWidget *widget, stream_data *data);
 
-static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, custom_data *data);
+static gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data);
+
+static void cb_message(GstBus *bus, GstMessage *msg, stream_data *data);
 
 #endif

@@ -5,6 +5,21 @@
 // #include "gui/stream_playback.h"
 #include "streamer/decklink.h"
 
+int main(int argc, char **argv) {
+    GtkApplication *app;
+    int status;
+
+    app = gtk_application_new("led.server.conductor", G_APPLICATION_FLAGS_NONE);
+    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+    status = g_application_run(G_APPLICATION(app), argc, argv);
+    g_object_unref(app);
+    gst_init(&argc, &argv);
+
+    // decklink();
+
+    return status;
+}
+
 static void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
 
@@ -16,23 +31,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
     tab(window);
     // decklink_stream_gst(window);
     // webview(window);
-}
-
-int main(int argc, char **argv) {
-    GtkApplication *app;
-    int status;
-
-    app = gtk_application_new("led.server.conductor", G_APPLICATION_FLAGS_NONE);
-    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION(app), argc, argv);
-    g_object_unref(app);
-    printf("test3\n");
-    gst_init(&argc, &argv);
-
-    printf("test2\n");
-    // decklink();
-
-    return status;
 }
 
 void tab(GtkWidget **window) {
@@ -50,12 +48,10 @@ void tab(GtkWidget **window) {
     stream_label = gtk_label_new("Decklink");
 
     webview(webview_grid);
-    decklink_stream_gst(stream_grid);
+    decklink_stream_gst(stream_grid, window);
 
     tab = gtk_notebook_new();
 
-
-    printf("test4\n");
     
     gtk_notebook_append_page(tab, webview_grid, webview_label);
     gtk_notebook_append_page(tab, stream_grid, stream_label);

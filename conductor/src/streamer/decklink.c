@@ -33,7 +33,7 @@ int decklink() {
     data.pipeline = pipeline;
 
     gst_bus_add_signal_watch(bus);
-    g_signal_connect(bus, "message", G_CALLBACK(cb_message), &data);
+    g_signal_connect(bus, "message", G_CALLBACK(dcb_message), &data);
 
     g_main_loop_run(main_loop);
 
@@ -46,7 +46,7 @@ int decklink() {
     return 0;
 }
 
-static void cb_message (GstBus *bus, GstMessage *msg, streamData *data) {
+static void dcb_message (GstBus *bus, GstMessage *msg, streamData *data) {
 
   switch (GST_MESSAGE_TYPE (msg)) {
     case GST_MESSAGE_ERROR: {
