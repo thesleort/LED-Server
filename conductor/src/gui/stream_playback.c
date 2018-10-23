@@ -9,12 +9,16 @@ void decklink_stream_gst(GtkGrid **grid, GtkWindow **window) {
     GstBus *bus;
     GstStateChangeReturn ret;
 
+    printf("Init stream\n");
+
     gst_init(0, ' ');
 
     memset(&data, 0, sizeof(data));
     data.duration = GST_CLOCK_TIME_NONE;
 
+
     // data.pipeline = gst_parse_launch("playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
+    data.pipeline = gst_element_factory_make ("playbin", "playbin");
 
     if (!data.pipeline) {
         g_printerr("Not all elements could be created.\n");
@@ -31,10 +35,19 @@ void decklink_stream_gst(GtkGrid **grid, GtkWindow **window) {
 
     bus = gst_element_get_bus(data.pipeline);
 
-    ret = gst_element_set_state(data.pipeline, GST_STATE_PLAYING);
+    gst_bus_add_signal_watch (bus);
+
+    ret = gst_element_set_state (data.pipeline, GST_STATE_PLAYING);
+    if (ret == GST_STATE_CHANGE_FAILURE) {
+        g_printerr ("Unable to set the pipeline to the playing state.\n");
+        gst_object_unref (data.pipeline);
+        return -1;
+    }
+
+    /* Register a function that GLib will call every second */
+    g_timeout_add_seconds (1, (GSourceFunc)refresh_ui, &data);
 
     printf("streaming\n");
-    g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
 
     // gtk_widget_show_all(window);
 }
@@ -43,21 +56,25 @@ static void setup_stream_ui(GtkGrid **grid, GtkWindow **window, stream_data *dat
     GtkWidget *video_area;
     GtkWidget *main_hbox;
     GtkWidget *main_box;
-    gtk_widget_set_double_buffered(video_area, FALSE);
-    gtk_widget_set_size_request(video_area, 896, 512);
 
     // video_area = gtk_drawing_area_new();
     video_area = GTK_DRAWING_AREA(gtk_drawing_area_new());
     main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
+    gtk_widget_set_double_buffered(video_area, FALSE);
+    gtk_widget_set_size_request(video_area, 896, 512);
+
     gtk_box_pack_start(GTK_BOX(main_box), video_area, TRUE, TRUE, 0);
 
-    g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data);
-    g_signal_connect (video_area, "draw", G_CALLBACK (draw_cb), data);
 
     // grid = GTK_GRID(gtk_grid_new());
     gtk_grid_attach(grid, main_box, 0, 0, 100, 1);
 
+
+    g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data);
+    g_signal_connect (video_area, "draw", G_CALLBACK (draw_cb), data);
+
+    // gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->pipeline), video_area);
     // gtk_container_add(window, video_area);
 
 
@@ -127,7 +144,7 @@ static void realize_cb(GtkWidget *widget, stream_data *data) {
 
     window_handle = GDK_WINDOW_XID(window);
     /* Pass it to playbin, which implements VideoOverlay and will forward it to the video sink */
-    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->pipeline), window);
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->pipeline), widget);
 }
 
 static gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
