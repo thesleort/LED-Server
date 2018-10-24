@@ -1,7 +1,7 @@
 
 #include "gui/control_window.h"
 
-void control_window_init(GtkWidget *window, stream_data *data) {
+void control_window_init(GtkWidget *window, stream_data *data, GtkNotebook **tab) {
     gtk_window_set_title(GTK_WINDOW(window), "LED Server - Control window");
 
     GtkWidget *vbox;
@@ -41,6 +41,11 @@ void control_window_init(GtkWidget *window, stream_data *data) {
     gtk_box_pack_end(controls, btn_webview, TRUE, TRUE, 10);
     gtk_box_pack_end(controls, btn_decklink, TRUE, TRUE, 10);
 
+    g_signal_connect(G_OBJECT(btn_decklink), "clicked", G_CALLBACK(tab_decklink_cb), tab);
+    g_signal_connect(G_OBJECT(btn_webview), "clicked", G_CALLBACK(tab_webview_cb), tab);
+    g_signal_connect(G_OBJECT(btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), tab);
+
+
 
 
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
@@ -51,4 +56,16 @@ void control_window_init(GtkWidget *window, stream_data *data) {
 
     gtk_widget_show_all(window);
 
+}
+
+void tab_decklink_cb(GtkButton *button, GtkNotebook *tab) {
+    gtk_notebook_set_current_page(tab, 0);
+}
+
+void tab_webview_cb(GtkButton *button, GtkNotebook *tab) {
+    gtk_notebook_set_current_page(tab, 1);
+}
+
+void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab) {
+    gtk_notebook_next_page(tab);
 }

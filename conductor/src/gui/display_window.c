@@ -1,9 +1,8 @@
 
 #include "gui/display_window.h"
 
-void display_window_init(GtkWidget *window, stream_data *data) {
+void display_window_init(GtkWidget *window, stream_data *data, GtkNotebook **tab) {
 
-    GtkWidget *tab;
     GtkGrid *webview_grid;
     GtkLabel *webview_label;
 
@@ -20,13 +19,12 @@ void display_window_init(GtkWidget *window, stream_data *data) {
     stream_label = gtk_label_new("Decklink");
 
     // Setup tab: Start
-    tab = gtk_notebook_new();
 
     webview(webview_grid);
     decklink_stream_gst(stream_grid, window, data);
 
 
-    gtk_notebook_set_show_tabs(tab, TRUE);
+    gtk_notebook_set_show_tabs(tab, FALSE);
     gtk_notebook_set_show_border(tab, FALSE);
     gtk_notebook_append_page(tab, stream_grid, stream_label);
     gtk_notebook_append_page(tab, webview_grid, webview_label);

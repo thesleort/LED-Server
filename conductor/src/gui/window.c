@@ -21,13 +21,16 @@ int main(int argc, char **argv) {
 void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *display_window;
     GtkWidget *control_window;
+    GtkWidget *tab;
     stream_data stream;
+    
+    tab = gtk_notebook_new();
 
     control_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     display_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     
-    control_window_init(control_window, &stream);
-    display_window_init(display_window, &stream);
+    control_window_init(control_window, &stream, tab);
+    display_window_init(display_window, &stream, tab);
 
 
     gtk_widget_show_all(display_window);
