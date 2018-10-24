@@ -8,7 +8,6 @@
 void activate(GtkApplication *app,
                      gpointer user_data);
 
-void tab(GtkWidget *window);
 
 main(int argc, char **argv);
 

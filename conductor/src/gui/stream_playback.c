@@ -15,8 +15,6 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     memset(data, 0, sizeof(*data));
     data->duration = GST_CLOCK_TIME_NONE;
 
-
-    // data.pipeline = gst_parse_launch("playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
     data->pipeline = gst_element_factory_make ("playbin", "playbin");
 
     if (!data->pipeline) {
@@ -47,8 +45,6 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     g_timeout_add_seconds (1, (GSourceFunc)refresh_ui, &data);
 
     printf("streaming\n");
-
-    // gtk_widget_show_all(window);
 }
 
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
@@ -56,7 +52,6 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     GtkWidget *main_hbox;
     GtkWidget *main_box;
 
-    // video_area = gtk_drawing_area_new();
     video_area = GTK_DRAWING_AREA(gtk_drawing_area_new());
     main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
@@ -65,29 +60,10 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
 
     gtk_box_pack_start(GTK_BOX(main_box), video_area, TRUE, TRUE, 0);
 
-
-    // grid = GTK_GRID(gtk_grid_new());
     gtk_grid_attach(grid, main_box, 0, 0, 100, 1);
-
 
     g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data);
     g_signal_connect (video_area, "draw", G_CALLBACK (draw_cb), data);
-
-    // gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->pipeline), video_area);
-    // gtk_container_add(window, video_area);
-
-
-    // gtk_container_add(GTK_CONTAINER(grid), GTK_GRID(grid));
-
-    // gtk_widget_show_all(grid);
-
-    // main_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    // gtk_box_pack_start(GTK_BOX(main_hbox), video_area, TRUE, TRUE, 0);
-
-    // main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    // gtk_box_pack_start(GTK_BOX(main_box), main_hbox, TRUE, TRUE, 0);
-
-    // gtk_container_add(GTK_CONTAINER(window), main_box);
 }
 
 /*
@@ -112,26 +88,6 @@ gboolean refresh_ui(stream_data *data) {
     /* We do not want to update anything unless we are in the PAUSED or PLAYING states */
     if (data->state < GST_STATE_PAUSED)
         return TRUE;
-
-    /* If we didn't know it yet, query the stream duration */
-    // if (!GST_CLOCK_TIME_IS_VALID(data->duration)) {
-    //     if (!gst_element_query_duration(data->pipeline, GST_FORMAT_TIME, &data->duration)) {
-    //         g_printerr("Could not query current duration.\n");
-    //     } else {
-    //         /* Set the range of the slider to the clip duration, in SECONDS */
-    //         gtk_range_set_range(GTK_RANGE(data->slider), 0, (gdouble)data->duration / GST_SECOND);
-    //     }
-    // }
-
-    // if (gst_element_query_position(data->playbin, GST_FORMAT_TIME, &current)) {
-    //     /* Block the "value-changed" signal, so the slider_cb function is not called
-    //  * (which would trigger a seek the user has not requested) */
-    //     g_signal_handler_block(data->slider, data->slider_update_signal_id);
-    //     /* Set the position of the slider to the current pipeline positoin, in SECONDS */
-    //     gtk_range_set_value(GTK_RANGE(data->slider), (gdouble)current / GST_SECOND);
-    //     /* Re-enable the signal */
-    //     g_signal_handler_unblock(data->slider, data->slider_update_signal_id);
-    // }
     return TRUE;
 }
 
@@ -169,4 +125,12 @@ gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
 /* This function is called when the STOP button is clicked */
 void stop_cb (GtkButton *button, stream_data *data) {
   gst_element_set_state (data->pipeline, GST_STATE_READY);
+}
+
+void pause_cb(stream_data *data) {
+    gst_element_set_state(data->pipeline, GST_STATE_PAUSED);
+}
+
+void play_cb(stream_data *data) {
+    gst_element_set_state(data->pipeline, GST_STATE_PLAYING);
 }

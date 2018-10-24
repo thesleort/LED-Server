@@ -6,24 +6,6 @@
 #include "gui/stream_playback.h"
 // #include "streamer/decklink.h"
 
-void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, stream_data *data) {
-    printf("Calling: switch_tab_cb\n");
-
-    switch (page_num) {
-    case 0:
-        printf("page: 0\n");
-        break;
-    case 1:
-        printf("page: 1\n");
-        break;
-    }
-}
-
-/* This function is called when the main window is closed */
-void delete_event_cb(GtkWidget *widget, GdkEvent *event, stream_data *data) {
-    stop_cb(NULL, data);
-    gtk_main_quit();
-}
 
 int main(int argc, char **argv) {
     GtkApplication *app;
@@ -52,9 +34,8 @@ void activate(GtkApplication *app, gpointer user_data) {
     // window = gtk_application_window_new(app);
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), &stream);
-    gtk_window_set_title(GTK_WINDOW(window), "Window");
-
-    //
+    gtk_window_set_title(GTK_WINDOW(window), "LED Server");
+    gtk_window_set_decorated(window, FALSE);
 
     webview_grid = gtk_grid_new();
     webview_label = gtk_label_new("Webview");
@@ -66,52 +47,38 @@ void activate(GtkApplication *app, gpointer user_data) {
     decklink_stream_gst(stream_grid, window, &stream);
 
     tab = gtk_notebook_new();
-
+    gtk_notebook_set_show_border(tab, FALSE);
     gtk_notebook_append_page(tab, stream_grid, stream_label);
     gtk_notebook_append_page(tab, webview_grid, webview_label);
 
     g_signal_connect(G_OBJECT(tab), "switch-page", G_CALLBACK(switch_tab_cb), &stream);
 
-    printf("switch cb setup\n");
-    // gtk_notebook_append_page()
 
     gtk_container_add(GTK_CONTAINER(window), tab);
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
-    //
 
-    // tab(window);
     gtk_widget_show_all(window);
     gtk_main();
 }
 
-void tab(GtkWidget *window) {
-    stream_data stream;
-    GtkWidget *tab;
-    GtkGrid *webview_grid;
-    GtkLabel *webview_label;
 
-    GtkGrid *stream_grid;
-    GtkLabel *stream_label;
+void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, stream_data *data) {
+    printf("Calling: switch_tab_cb\n");
 
-    webview_grid = gtk_grid_new();
-    webview_label = gtk_label_new("Webview");
+    switch (page_num) {
+    case 0:
+        printf("page: 0\n");
+        play_cb(data);
+        break;
+    case 1:
+        printf("page: 1\n");
+        pause_cb(data);
+        break;
+    }
+}
 
-    stream_grid = gtk_grid_new();
-    stream_label = gtk_label_new("Decklink");
-
-    webview(webview_grid);
-    decklink_stream_gst(stream_grid, &window, &stream);
-
-    tab = gtk_notebook_new();
-
-    gtk_notebook_append_page(tab, stream_grid, stream_label);
-    gtk_notebook_append_page(tab, webview_grid, webview_label);
-
-    g_signal_connect(G_OBJECT(tab), "switch-page", G_CALLBACK(switch_tab_cb), &stream);
-
-    // gtk_notebook_append_page()
-
-    gtk_container_add(GTK_CONTAINER(&window), tab);
-
-    // gtk_widget_show_all(window);
+/* This function is called when the main window is closed */
+void delete_event_cb(GtkWidget *widget, GdkEvent *event, stream_data *data) {
+    stop_cb(NULL, data);
+    gtk_main_quit();
 }
