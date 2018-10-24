@@ -3,13 +3,15 @@
 
 #include <gtk/gtk.h>
 #include "gui/stream_playback.h"
+#include "gui/display_window.h"
+#include "gui/control_window.h"
 
 
 void activate(GtkApplication *app,
                      gpointer user_data);
 
 
-main(int argc, char **argv);
+int main(int argc, char **argv);
 
 
 /**
