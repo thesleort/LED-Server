@@ -29,18 +29,22 @@ typedef struct _custom_data {
     gint64 duration;
 } custom_data;
 
-void decklink_stream_gst(GtkGrid **grid, GtkWindow **window);
+// static GtkWidget *video_area;
 
-static void setup_stream_ui(GtkGrid **grid, GtkWindow **window, stream_data *data);
+void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, stream_data *data);
 
-static void tags_cb(GstElement *playbin, gint stream, stream_data *data);
+void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data);
 
-static gboolean refresh_ui(stream_data *data);
+void tags_cb(GstElement *playbin, gint stream, stream_data *data);
 
-static void realize_cb(GtkWidget *widget, stream_data *data);
+gboolean refresh_ui(stream_data *data);
 
-static gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data);
+void stop_cb (GtkButton *button, stream_data *data);
 
-static void cb_message(GstBus *bus, GstMessage *msg, stream_data *data);
+void realize_cb(GtkWidget *widget, stream_data *data);
+
+gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data);
+
+void cb_message(GstBus *bus, GstMessage *msg, stream_data *data);
 
 #endif

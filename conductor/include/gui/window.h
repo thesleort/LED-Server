@@ -2,12 +2,24 @@
 #define __WINDOW_GTK_H
 
 #include <gtk/gtk.h>
+#include "gui/stream_playback.h"
 
 
-static void activate(GtkApplication *app,
+void activate(GtkApplication *app,
                      gpointer user_data);
+
+void tab(GtkWidget *window);
 
 main(int argc, char **argv);
 
+
+/**
+ * @brief Callbacks
+ * 
+ */
+
+void delete_event_cb (GtkWidget *widget, GdkEvent *event, stream_data *data);
+
+void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, stream_data *data);
 
 #endif

@@ -4,8 +4,7 @@
 
 #include "gui/stream_playback.h"
 
-void decklink_stream_gst(GtkGrid **grid, GtkWindow **window) {
-    stream_data data;
+void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     GstBus *bus;
     GstStateChangeReturn ret;
 
@@ -13,34 +12,34 @@ void decklink_stream_gst(GtkGrid **grid, GtkWindow **window) {
 
     gst_init(0, ' ');
 
-    memset(&data, 0, sizeof(data));
-    data.duration = GST_CLOCK_TIME_NONE;
+    memset(data, 0, sizeof(*data));
+    data->duration = GST_CLOCK_TIME_NONE;
 
 
     // data.pipeline = gst_parse_launch("playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
-    data.pipeline = gst_element_factory_make ("playbin", "playbin");
+    data->pipeline = gst_element_factory_make ("playbin", "playbin");
 
-    if (!data.pipeline) {
+    if (!data->pipeline) {
         g_printerr("Not all elements could be created.\n");
         return -1;
     }
 
-    g_object_set(data.pipeline, "uri", "https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
+    g_object_set(data->pipeline, "uri", "https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
 
-    g_signal_connect(G_OBJECT(data.pipeline), "video-tags-changed", (GCallback)tags_cb, &data);
-    g_signal_connect(G_OBJECT(data.pipeline), "audio-tags-changed", (GCallback)tags_cb, &data);
-    g_signal_connect(G_OBJECT(data.pipeline), "text-tags-changed", (GCallback)tags_cb, &data);
+    g_signal_connect(G_OBJECT(data->pipeline), "video-tags-changed", (GCallback)tags_cb, &data);
+    g_signal_connect(G_OBJECT(data->pipeline), "audio-tags-changed", (GCallback)tags_cb, &data);
+    g_signal_connect(G_OBJECT(data->pipeline), "text-tags-changed", (GCallback)tags_cb, &data);
 
-    setup_stream_ui(grid, window, &data);
+    setup_stream_ui(grid, window, data);
 
-    bus = gst_element_get_bus(data.pipeline);
+    bus = gst_element_get_bus(data->pipeline);
 
     gst_bus_add_signal_watch (bus);
 
-    ret = gst_element_set_state (data.pipeline, GST_STATE_PLAYING);
+    ret = gst_element_set_state (data->pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE) {
         g_printerr ("Unable to set the pipeline to the playing state.\n");
-        gst_object_unref (data.pipeline);
+        gst_object_unref (data->pipeline);
         return -1;
     }
 
@@ -52,7 +51,7 @@ void decklink_stream_gst(GtkGrid **grid, GtkWindow **window) {
     // gtk_widget_show_all(window);
 }
 
-static void setup_stream_ui(GtkGrid **grid, GtkWindow **window, stream_data *data) {
+void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     GtkWidget *video_area;
     GtkWidget *main_hbox;
     GtkWidget *main_box;
@@ -98,7 +97,8 @@ static void setup_stream_ui(GtkGrid **grid, GtkWindow **window, stream_data *dat
  */
 
 /* This function is called when new metadata is discovered in the stream */
-static void tags_cb(GstElement *playbin, gint stream, stream_data *data) {
+void tags_cb(GstElement *playbin, gint stream, stream_data *data) {
+    printf("Calling: tags_cb\n");
     /* We are possibly in a GStreamer working thread, so we notify the main
    * thread of this event through a message in the bus */
     gst_element_post_message(playbin,
@@ -106,7 +106,7 @@ static void tags_cb(GstElement *playbin, gint stream, stream_data *data) {
                                                          gst_structure_new_empty("tags-changed")));
 }
 
-static gboolean refresh_ui(stream_data *data) {
+gboolean refresh_ui(stream_data *data) {
     gint64 current = -1;
 
     /* We do not want to update anything unless we are in the PAUSED or PLAYING states */
@@ -135,19 +135,22 @@ static gboolean refresh_ui(stream_data *data) {
     return TRUE;
 }
 
-static void realize_cb(GtkWidget *widget, stream_data *data) {
+void realize_cb(GtkWidget *widget, stream_data *data) {
+    printf("Calling: realize_cb\n");
     GdkWindow *window = gtk_widget_get_window(widget);
     guintptr window_handle;
 
     if (!gdk_window_ensure_native(window))
         g_error("Couldn't create native window needed for GstVideoOverlay!");
 
-    window_handle = GDK_WINDOW_XID(window);
+    printf("err\n");
     /* Pass it to playbin, which implements VideoOverlay and will forward it to the video sink */
-    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->pipeline), widget);
+    window_handle = GDK_WINDOW_XID(window);
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->pipeline), window_handle);
 }
 
-static gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
+gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
+    printf("Calling: draw_cb\n");
     if (data->state < GST_STATE_PAUSED) {
         GtkAllocation allocation;
 
@@ -160,4 +163,10 @@ static gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
     }
 
     return FALSE;
+}
+
+
+/* This function is called when the STOP button is clicked */
+void stop_cb (GtkButton *button, stream_data *data) {
+  gst_element_set_state (data->pipeline, GST_STATE_READY);
 }
