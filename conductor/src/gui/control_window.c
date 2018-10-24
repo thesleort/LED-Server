@@ -67,5 +67,9 @@ void tab_webview_cb(GtkButton *button, GtkNotebook *tab) {
 }
 
 void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab) {
-    gtk_notebook_next_page(tab);
+    if(gtk_notebook_get_current_page(tab) == gtk_notebook_get_n_pages(tab) - 1 ) {
+        gtk_notebook_set_current_page(tab, 0);
+    } else {
+        gtk_notebook_next_page(tab);
+    }
 }
