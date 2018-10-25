@@ -23,7 +23,7 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
         return -1;
     }
 
-    g_object_set(data->pipeline, "uri", "https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
+    g_object_set(data->pipeline, "uri", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", NULL);
 
     g_signal_connect(G_OBJECT(data->pipeline), "video-tags-changed", (GCallback)tags_cb, &data);
     g_signal_connect(G_OBJECT(data->pipeline), "audio-tags-changed", (GCallback)tags_cb, &data);

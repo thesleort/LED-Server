@@ -193,6 +193,7 @@ void gui_lock_cb(GtkButton *button, options *option) {
         gtk_widget_set_sensitive(option->m_display_settings->entry_pos_y, TRUE);
         gtk_widget_set_sensitive(option->m_decklink_options->btn_hdmi, TRUE);
         gtk_widget_set_sensitive(option->m_decklink_options->btn_sdi, TRUE);
+        gtk_widget_set_sensitive(option->m_decklink_options->btn_other, FALSE);
         option->m_controls->locked = FALSE;
         printf("State: Unlocked\n");
     } else {
