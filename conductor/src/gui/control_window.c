@@ -14,7 +14,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab) 
     GtkLabel *decklink_label, *webview_label, *controls_label;
     GtkLabel *decklink_label_desc, *decklink_label_current_input;
 
-    GtkButton *btn_tab_switch, *btn_decklink, *btn_webview, *btn_display_open, *btn_hdmi, *btn_sdi;
+    GtkButton *btn_tab_switch, *btn_display_open, *btn_webview, *btn_decklink, *btn_hdmi, *btn_sdi;
 
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     decklink_options = gtk_grid_new();
@@ -29,15 +29,19 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab) 
     decklink_label_current_input = gtk_label_new("Current input: SDI");
     gtk_label_set_xalign(decklink_label_current_input, 0.0);
 
-    btn_tab_switch = gtk_button_new_with_label("Switch");
-    btn_display_open = gtk_button_new_with_label("Open player");
-    btn_webview = gtk_button_new_with_label("Projector");
-    btn_decklink = gtk_button_new_with_label("Video stream");
-
     btn_hdmi = gtk_button_new_with_label("HDMI Input");
     btn_sdi = gtk_button_new_with_label("SDI Input");
 
-    option->m_controls->open_display = btn_display_open;
+    btn_display_open = gtk_button_new_with_label("Open player");
+    btn_decklink = gtk_button_new_with_label("Video stream");
+    btn_tab_switch = gtk_button_new_with_label("Switch");
+    btn_webview = gtk_button_new_with_label("Projector");
+
+    option->m_controls->btn_open_display = btn_display_open;
+    option->m_controls->btn_decklink = btn_decklink;
+    option->m_controls->btn_tab_switch = btn_tab_switch;
+    option->m_controls->btn_webview = btn_webview;
+
 
     option->m_decklink_options->m_input = sdi;
     option->m_decklink_options->btn_other = btn_sdi;
@@ -79,12 +83,12 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab) 
 
     g_signal_connect(G_OBJECT(btn_hdmi), "clicked", G_CALLBACK(decklink_input_hdmi), option->m_decklink_options);
     g_signal_connect(G_OBJECT(btn_sdi), "clicked", G_CALLBACK(decklink_input_sdi), option->m_decklink_options);
+    g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option->m_decklink_options->m_stream);
+
 
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
 
     gtk_container_add(window, vbox);
-
-    g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option->m_decklink_options->m_stream);
 
     gtk_widget_show_all(window);
 }
@@ -127,6 +131,10 @@ void open_display_window_cb(GtkButton *button, options *option) {
     display_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     option->display_window = display_window;
     option->m_display_settings->tab = gtk_notebook_new();
+
+    g_signal_connect(G_OBJECT(option->m_controls->btn_decklink), "clicked", G_CALLBACK(tab_decklink_cb), option->m_display_settings->tab);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_webview), "clicked", G_CALLBACK(tab_webview_cb), option->m_display_settings->tab);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), option->m_display_settings->tab);
 
     gtk_widget_set_sensitive(button, FALSE);
     display_window_init(option->display_window, option, option->m_display_settings->tab);

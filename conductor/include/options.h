@@ -16,7 +16,10 @@ typedef struct _stream_data {
 } stream_data;
 
 typedef struct _controls {
-    GtkButton *open_display;
+    GtkButton **btn_open_display;
+    GtkButton **btn_tab_switch;
+    GtkButton **btn_decklink;
+    GtkButton **btn_webview;
 } controls;
 
 typedef struct _display_settings {

@@ -46,7 +46,7 @@ void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     stop_cb(NULL, option->m_decklink_options->m_stream);
     option->is_display_open = FALSE;
     gtk_widget_destroy(option->display_window);
-    gtk_widget_set_sensitive(option->m_controls->open_display, TRUE);
+    gtk_widget_set_sensitive(option->m_controls->btn_open_display, TRUE);
     printf("Closed: Display Window\n");
 }
 
