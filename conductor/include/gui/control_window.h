@@ -18,4 +18,6 @@ void decklink_input_hdmi(GtkButton *button, decklink_options *option);
 
 void decklink_input_sdi(GtkButton *button, decklink_options *option);
 
+void open_display_window_cb(GtkButton *button, options *option);
+
 #endif

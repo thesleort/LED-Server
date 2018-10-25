@@ -5,9 +5,13 @@
 
 #include "gui/stream_playback.h"
 #include "gui/window.h"
+#include "options.h"
 
-void display_window_init(GtkWidget *window, stream_data *data, GtkNotebook **tab);
+void display_window_init(GtkWidget *window, options *option, GtkNotebook **tab);
 
-void display_close_cb (GtkWidget *widget, GdkEvent *event, stream_data *data);
+void display_close_cb (GtkWidget *widget, GdkEvent *event, options *option);
+
+void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, stream_data *data);
+
 
 #endif

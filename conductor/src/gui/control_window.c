@@ -37,6 +37,8 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab) 
     btn_hdmi = gtk_button_new_with_label("HDMI Input");
     btn_sdi = gtk_button_new_with_label("SDI Input");
 
+    option->m_controls->open_display = btn_display_open;
+
     option->m_decklink_options->m_input = sdi;
     option->m_decklink_options->btn_other = btn_sdi;
     option->m_decklink_options->label_current_input = decklink_label_current_input;
@@ -66,9 +68,14 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab) 
     g_object_set(btn_sdi, "margin", 6, NULL);
     g_object_set(decklink_label_current_input, "margin", 12, NULL);
 
+    if(option->is_display_open == TRUE) {
+        gtk_widget_set_sensitive(btn_display_open, FALSE);
+    }
+
     g_signal_connect(G_OBJECT(btn_decklink), "clicked", G_CALLBACK(tab_decklink_cb), tab);
     g_signal_connect(G_OBJECT(btn_webview), "clicked", G_CALLBACK(tab_webview_cb), tab);
     g_signal_connect(G_OBJECT(btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), tab);
+    g_signal_connect(G_OBJECT(btn_display_open), "clicked", G_CALLBACK(open_display_window_cb), option);
 
     g_signal_connect(G_OBJECT(btn_hdmi), "clicked", G_CALLBACK(decklink_input_hdmi), option->m_decklink_options);
     g_signal_connect(G_OBJECT(btn_sdi), "clicked", G_CALLBACK(decklink_input_sdi), option->m_decklink_options);
@@ -112,4 +119,15 @@ void decklink_input_sdi(GtkButton *button, decklink_options *option) {
     option->btn_other = button;
     option->m_input = hdmi;
     gtk_label_set_text(option->label_current_input, "Current input: SDI");
+}
+
+void open_display_window_cb(GtkButton *button, options *option) {
+    GtkWidget *display_window;
+
+    display_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    option->display_window = display_window;
+    option->m_display_settings->tab = gtk_notebook_new();
+
+    gtk_widget_set_sensitive(button, FALSE);
+    display_window_init(option->display_window, option, option->m_display_settings->tab);
 }

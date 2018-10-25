@@ -15,6 +15,14 @@ typedef struct _stream_data {
 
 } stream_data;
 
+typedef struct _controls {
+    GtkButton *open_display;
+} controls;
+
+typedef struct _display_settings {
+    GtkNotebook *tab;
+} display_settings;
+
 typedef struct _decklink_options {
     enum input m_input;
     GtkButton *btn_other;
@@ -24,6 +32,8 @@ typedef struct _decklink_options {
 
 typedef struct _options {
     decklink_options *m_decklink_options;
+    controls *m_controls;
+    display_settings *m_display_settings;
     GtkWindow *display_window;
     gboolean is_display_open;
 } options;

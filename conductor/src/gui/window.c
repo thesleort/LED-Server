@@ -22,19 +22,25 @@ int main(int argc, char **argv) {
 void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *display_window;
     GtkWidget *control_window;
-    GtkWidget *tab;
+    GtkNotebook *tab;
     stream_data stream;
 
     options *option = (options*)malloc(sizeof(options)); 
     decklink_options *d_option = (decklink_options *)malloc(sizeof(decklink_options));
+    display_settings *display = (display_settings*)malloc(sizeof(display_settings));
+    controls *control = (controls*)malloc(sizeof(controls));
+    option->m_controls = control;
     option->m_decklink_options = d_option;
+    option->m_display_settings = display;
     option->m_decklink_options->m_stream = &stream;
 
-    tab = gtk_notebook_new();
+    option->m_display_settings->tab = gtk_notebook_new();
+    tab = option->m_display_settings->tab;
 
     control_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     display_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     
+    option->is_display_open = TRUE;
     control_window_init(control_window, option, tab);
     display_window_init(display_window, option, tab);
 
@@ -43,21 +49,6 @@ void activate(GtkApplication *app, gpointer user_data) {
     gtk_main();
 }
 
-
-void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, stream_data *data) {
-    printf("Calling: switch_tab_cb\n");
-
-    switch (page_num) {
-    case 0:
-        printf("page: 0\n");
-        play_cb(data);
-        break;
-    case 1:
-        printf("page: 1\n");
-        pause_cb(data);
-        break;
-    }
-}
 
 /* This function is called when the main window is closed */
 void delete_event_cb(GtkWidget *widget, GdkEvent *event, stream_data *data) {
