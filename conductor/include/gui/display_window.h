@@ -7,7 +7,7 @@
 #include "gui/window.h"
 #include "options.h"
 
-void display_window_init(GtkWidget *window, options *option, GtkNotebook **tab);
+void display_window_init(GtkWidget *window, options *option);
 
 void display_close_cb (GtkWidget *widget, GdkEvent *event, options *option);
 

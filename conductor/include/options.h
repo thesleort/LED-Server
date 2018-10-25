@@ -20,10 +20,16 @@ typedef struct _controls {
     GtkButton **btn_tab_switch;
     GtkButton **btn_decklink;
     GtkButton **btn_webview;
+    gboolean locked;
 } controls;
 
 typedef struct _display_settings {
-    GtkNotebook *tab;
+    GtkNotebook **tab;
+    unsigned pos_x;
+    unsigned pos_y;
+    GtkEntry *entry_pos_x;
+    GtkEntry *entry_pos_y;
+    GtkButton **btn_pos_apply;
 } display_settings;
 
 typedef struct _decklink_options {
@@ -31,6 +37,8 @@ typedef struct _decklink_options {
     GtkButton *btn_other;
     GtkLabel *label_current_input;
     stream_data *m_stream;
+    GtkButton *btn_hdmi;
+    GtkButton *btn_sdi;
 } decklink_options;
 
 typedef struct _options {

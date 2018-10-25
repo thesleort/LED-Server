@@ -42,7 +42,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     
     option->is_display_open = TRUE;
     control_window_init(control_window, option, tab);
-    display_window_init(display_window, option, tab);
+    display_window_init(display_window, option);
 
 
     gtk_widget_show_all(display_window);

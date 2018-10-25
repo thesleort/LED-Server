@@ -20,4 +20,9 @@ void decklink_input_sdi(GtkButton *button, decklink_options *option);
 
 void open_display_window_cb(GtkButton *button, options *option);
 
+void set_display_window_pos_cb(GtkButton *button, options *option);
+
+void gui_lock_cb(GtkButton *button, options *option);
+
+
 #endif

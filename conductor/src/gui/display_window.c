@@ -1,7 +1,8 @@
 
 #include "gui/display_window.h"
 
-void display_window_init(GtkWidget *window, options *option, GtkNotebook **tab) {
+void display_window_init(GtkWidget *window, options *option) {
+    GtkNotebook *tab = option->m_display_settings->tab;
     stream_data *data = option->m_decklink_options->m_stream;
     option->display_window = window;
     option->is_display_open = TRUE;
@@ -13,7 +14,7 @@ void display_window_init(GtkWidget *window, options *option, GtkNotebook **tab) 
     GtkLabel *stream_label;
 
     gtk_window_set_title(GTK_WINDOW(window), "LED Server - Display window");
-    gtk_window_set_decorated(window, TRUE);
+    gtk_window_set_decorated(window, FALSE);
 
     webview_grid = gtk_grid_new();
     webview_label = gtk_label_new("Webview");
