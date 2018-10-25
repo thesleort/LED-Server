@@ -3,6 +3,7 @@
 #include "gui/window.h"
 
 #include "gui/stream_playback.h"
+#include "options.h"
 
 
 int main(int argc, char **argv) {
@@ -23,14 +24,19 @@ void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *control_window;
     GtkWidget *tab;
     stream_data stream;
-    
+
+    options *option = (options*)malloc(sizeof(options)); 
+    decklink_options *d_option = (decklink_options *)malloc(sizeof(decklink_options));
+    option->m_decklink_options = d_option;
+    option->m_decklink_options->m_stream = &stream;
+
     tab = gtk_notebook_new();
 
     control_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     display_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     
-    control_window_init(control_window, &stream, tab);
-    display_window_init(display_window, &stream, tab);
+    control_window_init(control_window, option, tab);
+    display_window_init(display_window, option, tab);
 
 
     gtk_widget_show_all(display_window);

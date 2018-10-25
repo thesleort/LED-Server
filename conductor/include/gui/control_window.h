@@ -3,15 +3,19 @@
 
 #include <gtk/gtk.h>
 
-#include "gui/stream_playback.h"
 #include "gui/window.h"
+#include "options.h"
 
-void control_window_init(GtkWidget *window, stream_data *data, GtkNotebook **tab);
+void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab);
 
 void tab_decklink_cb(GtkButton *button, GtkNotebook *tab);
 
 void tab_webview_cb(GtkButton *button, GtkNotebook *tab);
 
 void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab);
+
+void decklink_input_hdmi(GtkButton *button, decklink_options *option);
+
+void decklink_input_sdi(GtkButton *button, decklink_options *option);
 
 #endif

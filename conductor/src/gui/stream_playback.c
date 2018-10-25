@@ -4,7 +4,8 @@
 
 #include "gui/stream_playback.h"
 
-void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, stream_data *data) {
+void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
+    stream_data *data = option->m_decklink_options->m_stream;
     GstBus *bus;
     GstStateChangeReturn ret;
 
