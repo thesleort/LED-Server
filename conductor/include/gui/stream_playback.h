@@ -8,15 +8,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gst/video/videooverlay.h>
-
-typedef struct _streamData {
-    gboolean is_live;
-    GstElement *pipeline;
-    GMainLoop *loop;
-    GstState state; /* Current state of the pipeline */
-    gint64 duration;
-
-} stream_data;
+#include "options.h"
 
 typedef struct _custom_data {
     GstElement *playbin; /* Our one and only pipeline */
@@ -31,7 +23,7 @@ typedef struct _custom_data {
 
 // static GtkWidget *video_area;
 
-void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, stream_data *data);
+void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option);
 
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data);
 

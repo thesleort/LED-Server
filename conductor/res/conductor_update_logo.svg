@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 107.77413 111.92916"
+   height="111.92916mm"
+   width="107.77413mm">
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient1103">
+      <stop
+         id="stop1099"
+         offset="0"
+         style="stop-color:#ffdd55;stop-opacity:1;" />
+      <stop
+         id="stop1101"
+         offset="1"
+         style="stop-color:#008080;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1001">
+      <stop
+         style="stop-color:#008080;stop-opacity:1"
+         offset="0"
+         id="stop1005" />
+      <stop
+         style="stop-color:#ffff00;stop-opacity:1"
+         offset="1"
+         id="stop1007" />
+    </linearGradient>
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       y2="535.34625"
+       x2="197.85715"
+       y1="238.91769"
+       x1="620"
+       id="linearGradient1003"
+       xlink:href="#linearGradient1001" />
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       y2="1076.4935"
+       x2="-523.02069"
+       y1="179.7381"
+       x1="224.47287"
+       id="linearGradient1105"
+       xlink:href="#linearGradient1103" />
+    <filter
+       id="filter1721"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood1711"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite1713"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur1715"
+         result="blur"
+         stdDeviation="3"
+         in="composite1" />
+      <feOffset
+         id="feOffset1717"
+         result="offset"
+         dy="0"
+         dx="0" />
+      <feComposite
+         id="feComposite1719"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+  </defs>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-41.158647,-25.13786)"
+     id="layer1">
+    <path
+       id="path823-3-5"
+       d="M 148.92861,90.403179 C 149.25885,123.51285 129.98775,137.21791 89.804129,137.06577 47.164203,136.90434 40.521918,113.04152 41.203689,89.965915 42.348455,51.219503 48.312134,23.650103 73.510184,25.20008 c 14.464134,0.889715 34.961336,7.35275 46.610816,13.234968 20.99704,10.602118 28.54977,26.116854 28.80761,51.968131 z"
+       style="fill:#e6e6e6;fill-opacity:1;stroke-width:0.31075972" />
+    <path
+       id="path823"
+       transform="scale(0.26458333)"
+       d="m 306.78487,201.68276 c -75.47706,9.32231 -129.22735,27.89011 -138.92773,124.40764 0.1185,97.76909 27.07164,157.79734 146.6063,169.97014 l 14.46429,-60.46093 c -66.20679,-12.66045 -123.89208,-44.15518 -123.9067,-109.2641 0.0648,-65.07072 8.45301,-91.99975 101.76384,-124.65275 z M 270.3563,112.55078 c 0,0 87.79879,34.58865 130.39318,53.197 60.30507,22.75425 102.80839,90.58953 102.82223,155.69977 -0.065,65.07131 -53.47522,101.39829 -119.64398,114.0505 l 19.10714,60.56249 C 519.04578,484.39213 577.03906,402.4427 530.71456,259.66183 514.42725,212.55629 437.72478,165.93648 328.54257,129.90936 310.03506,123.80239 290.59428,117.99979 270.3563,112.55078 Z"
+       style="fill:url(#linearGradient1003);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.99999994;stroke-opacity:1" />
+    <circle
+       r="51.971725"
+       cy="143.59749"
+       cx="238.75014"
+       id="path823-6"
+       style="fill:#1a1a1a;fill-opacity:1;stroke-width:0.26458332" />
+    <rect
+       y="118.65105"
+       x="231.47409"
+       height="88.513306"
+       width="14.552087"
+       id="rect840-7"
+       style="fill:#808080;fill-opacity:1;stroke-width:0.11314429" />
+    <path
+       id="path823-3-5-3"
+       transform="matrix(0.26458333,0,0,0.26458333,44.412201,29.77906)"
+       d="m 180.66602,161.67383 a 74.415584,69.566713 68.256991 0 0 -27.33985,4.58008 74.415584,69.566713 68.256991 0 0 -37.46484,38.16797 37.831024,36.106183 41.869868 0 0 -11.53125,43.12304 37.831024,36.106183 41.869868 0 0 13.27734,16.63867 74.415584,69.566713 68.256991 0 0 90.85352,40.3125 74.415584,69.566713 68.256991 0 0 42.30078,-58.21289 35.14583,32.85575 68.256991 0 0 2.35351,-31.85937 35.14583,32.85575 68.256991 0 0 -13.77734,-17.01758 74.415584,69.566713 68.256991 0 0 -58.67187,-35.73242 z"
+       style="fill:url(#linearGradient1105);fill-opacity:1;stroke-width:0.36629248" />
+    <ellipse
+       transform="rotate(-21.743009)"
+       cx="93.348106"
+       cy="240.35406"
+       rx="18.406193"
+       ry="19.689123"
+       id="path823-3-5-3-27"
+       style="fill:#ffdd55;fill-opacity:1;stroke-width:0.09691489" />
+    <ellipse
+       transform="rotate(-21.743009)"
+       cx="104.45738"
+       cy="242.28398"
+       rx="8.6930838"
+       ry="9.2990007"
+       id="path823-3-5-3-2-0"
+       style="fill:#ffdd55;fill-opacity:1;stroke-width:0.04577205" />
+    <ellipse
+       transform="matrix(0.93544137,-0.35348188,0.38795285,0.92167922,0,0)"
+       cx="78.555458"
+       cy="234.62904"
+       rx="9.6447163"
+       ry="9.9212046"
+       id="path823-3-5-3-9-9"
+       style="fill:#ffdd55;fill-opacity:1;stroke-width:0.04979919" />
+    <path
+       transform="matrix(0.86855652,0,0,1.0143562,19.122355,-1.4772544)"
+       id="rect1167"
+       d="m 104.72561,74.42769 -36.839017,34.13753 h 20.905734 v 22.80731 h 30.754133 v -22.80731 h 22.01848 z"
+       style="fill:#008080;fill-opacity:1;fill-rule:nonzero;stroke:#008080;stroke-width:1.57338452;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter1721)" />
+  </g>
+</svg>
