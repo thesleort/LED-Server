@@ -35,7 +35,7 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     Comment=Conductor auto updater
     Exec=bash $SCRIPTPATH/misc/autoupdate.sh
     ;Path=/home/samuel/ugene-1.11.5/
-    Icon=$SCRIPTPATH/res/conductor_logo.svg
+    Icon=$SCRIPTPATH/res/conductor_update_logo.svg
     Terminal=false
     Type=Application
     Categories=Utility;Development;
