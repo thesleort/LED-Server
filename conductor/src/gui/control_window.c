@@ -155,6 +155,7 @@ void window_decoration_toggle_cb(GtkButton *button, GtkNotebook *tab) {
 	} else {
 		gtk_window_set_decorated(window, TRUE);
 	}
+}
 
 void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
