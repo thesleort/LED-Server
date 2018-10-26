@@ -6,6 +6,16 @@ Environment for LED screen control and low latency playback of SDI/BNC input usi
 
 ## Setup
 
+### GUI
+
+Double click on `install.sh` or run in terminal
+
+```bash
+bash install.sh
+```
+
+### Terminal
+
 Create the following directories.
 
 ```bash
