@@ -42,18 +42,22 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     " > conductor_updater.desktop
     echo "65" ; sleep 0.5
     chmod +x conductor.desktop
+    echo "70"
     mv conductor.desktop $HOME/.local/share/applications
     echo "75" ; sleep 0.5
     chmod +x conductor_updater.desktop
+    echo "80"
     mv conductor_updater.desktop $HOME/.local/share/applications
 
     echo "100"
     # =================================================================
     echo "# Update complete" ; sleep 1
 ) | zenity --progress \
-  --title="Progress Status" \
+  --title="Conductor Installer" \
   --text="First Task." \
   --percentage=0 \
+  --width=300 \
+  --height=100
 #  --auto-close \
 #  --auto-kill
 

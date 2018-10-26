@@ -6,7 +6,7 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 echo $SCRIPTPATH
 
-sleep 1 && wmctrl -r "Progress Status" -b add,above &
+sleep 1 && wmctrl -r "Conductor Updater" -b add,above &
 ( 
     # =================================================================
     echo "# Making backup directory old/" ; sleep 1
@@ -14,7 +14,7 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     echo "10"
 
     # =================================================================
-    echo "# Copying conductor into old/" ; sleep 1
+    echo "# Copying conductor into $SCRIPTPATH/old/" ; sleep 1
     cp "$SCRIPTPATH/../conductor.out" "$SCRIPTPATH/../old/"
     echo "25"
 
@@ -24,7 +24,7 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     echo "50"
     
     # =================================================================
-    echo "# Prepares update" ; sleep 1
+    echo "# Preparing update" ; sleep 1
     (cd "$SCRIPTPATH/../" &&  make clean)
     echo "60"
 
@@ -36,9 +36,11 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     # =================================================================
     echo "# Update complete" ; sleep 1
 ) | zenity --progress \
-  --title="Progress Status" \
-  --text="First Task." \
+  --title="Conductor Updater" \
+  --text="Updating" \
   --percentage=0 \
+  --width=300 \
+  --height=100
 #  --auto-close \
 #  --auto-kill
 
