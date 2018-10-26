@@ -73,3 +73,14 @@ void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab) {
         gtk_notebook_next_page(tab);
     }
 }
+	
+void window_decoration_toggle_cb(GtkButton *button, GtkNotebook *tab) {
+	GtkWindow *window;
+	window = gtk_widget_get_root_window(tab);
+
+	if(gtk_window_get_decorated(window)) {
+		gtk_window_set_decorated(window, FALSE);
+	} else {
+		gtk_window_set_decorated(window, TRUE);
+	}
+}
