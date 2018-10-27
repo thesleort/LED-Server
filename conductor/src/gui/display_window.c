@@ -24,7 +24,7 @@ void display_window_init(GtkWidget *window, options *option) {
 
     // Setup tab: Start
 
-    webview(webview_grid);
+    webview(webview_grid, option);
     decklink_stream_gst(stream_grid, window, option);
 
     gtk_notebook_set_show_tabs(tab, FALSE);
@@ -32,7 +32,7 @@ void display_window_init(GtkWidget *window, options *option) {
     gtk_notebook_append_page(tab, stream_grid, stream_label);
     gtk_notebook_append_page(tab, webview_grid, webview_label);
 
-    g_signal_connect(G_OBJECT(tab), "switch-page", G_CALLBACK(switch_tab_cb), data);
+    g_signal_connect(G_OBJECT(tab), "switch-page", G_CALLBACK(switch_tab_cb), option);
     // Setup tab: End
 
     gtk_container_add(GTK_CONTAINER(window), tab);
@@ -51,17 +51,38 @@ void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     printf("Closed: Display Window\n");
 }
 
-void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, stream_data *data) {
+void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, options *option) {
     printf("Calling: switch_tab_cb\n");
-
+    char *js = "var iframe = document.querySelector( 'iframe');" 
+               "var video = document.querySelector( 'video' );" 
+               "if ( iframe ) {" 
+               "var iframeSrc = iframe.src;" 
+               "iframe.src = iframeSrc;" 
+               "}" 
+               "if ( video ) {" 
+               "video.pause();" 
+               "}";
+    WebKitSettings *web_settings = webkit_web_view_get_settings(option->m_display_settings->webview);
+	webkit_settings_set_enable_javascript(web_settings, TRUE);
     switch (page_num) {
     case 0:
         printf("page: 0\n");
-        play_cb(data);
+        play_cb(option->m_decklink_options->m_stream);
+        for (int i = 0; i < option->m_display_settings->size; ++i) {
+            printf("%c", option->m_display_settings->webview_pause_script[i]);
+        }
+        printf("\n");
+		// webkit_web_view_execute_script(option->m_display_settings->webview, js);
+        webkit_web_view_run_javascript(option->m_display_settings->webview, js, NULL, G_CALLBACK(finish), option);
         break;
     case 1:
         printf("page: 1\n");
-        pause_cb(data);
+        play_cb(option->m_decklink_options->m_stream);
+        webkit_settings_set_enable_media_stream(web_settings, TRUE);
         break;
     }
+}
+
+void finish() {
+    printf("Script done\n");
 }

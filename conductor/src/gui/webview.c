@@ -1,17 +1,22 @@
 #include <webkit2/webkit2.h>
+#include <stdio.h>  /* printf */
+#include <stdlib.h> /* fopen, fseek, ... */
 
 #include "gui/webview.h"
+#include "options.h"
 
 // GtkBox *grid;
 GtkEntry *url;
 GtkButton *search_btn;
 WebKitWebView *web_view;
 
-void webview(GtkGrid **grid) {
+void webview(GtkGrid **grid, options *option) {
     // url = malloc(sizeof(GtkEntry));
+    option->m_display_settings->webview = webkit_web_view_new();
     url = gtk_entry_new();
     search_btn = gtk_button_new();
-    web_view = webkit_web_view_new();
+    web_view = option->m_display_settings->webview;
+	load_scripts(option);
     // web_view = malloc(sizeof(WebKitWebView));
     printf("Webview setup\n");
 
@@ -40,13 +45,38 @@ void webview(GtkGrid **grid) {
     g_signal_connect(search_btn, "clicked", G_CALLBACK(url_entry_query), NULL);
     g_signal_connect(url, "activate", G_CALLBACK(url_entry_query), NULL);
 
+	WebKitWebInspector *inspector = webkit_web_view_get_inspector (WEBKIT_WEB_VIEW(web_view));
+	webkit_web_inspector_show (WEBKIT_WEB_INSPECTOR(inspector));
+
     // g_signal_connect(window, "destroy", G_CALLBACK(destroyWindowCb), NULL);
     // g_signal_connect(web_view, "close", G_CALLBACK(closeWebViewCb), window);
 
-
-
     // Will get input from mouse and keyboard.
     // gtk_widget_grab_focus(GTK_WIDGET(web_view));
+}
+
+void load_scripts(options *option) {
+    int size = 0;
+
+    FILE *fp = fopen("js/pause_video.js", "r");
+
+    fseek(fp, 0, SEEK_END); /* Go to end of file */
+    size = ftell(fp);      /* How many bytes did we pass ? */
+
+    /* Set position of stream to the beginning */
+    rewind(fp);
+
+    /* Allocate the buffer (no need to initialize it with calloc) */
+    option->m_display_settings->webview_pause_script = malloc((size + 1) * sizeof(*option->m_display_settings->webview_pause_script)); /* size + 1 byte for the \0 */
+
+    /* Read the file into the buffer */
+    fread(option->m_display_settings->webview_pause_script, size, 1, fp); /* Read 1 chunk of size bytes from fp into buffer */
+
+    /* NULL-terminate the buffer */
+    option->m_display_settings->webview_pause_script[size] = '\0';
+	option->m_display_settings->size = size;
+	printf("Script loaded\n");
+
 }
 
 static void url_entry_query(GtkWidget *widget, gpointer data) {

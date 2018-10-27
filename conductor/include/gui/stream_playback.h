@@ -8,6 +8,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gst/video/videooverlay.h>
+
 #include "options.h"
 
 typedef struct _custom_data {

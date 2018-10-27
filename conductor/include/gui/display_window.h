@@ -11,7 +11,9 @@ void display_window_init(GtkWidget *window, options *option);
 
 void display_close_cb (GtkWidget *widget, GdkEvent *event, options *option);
 
-void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, stream_data *data);
+void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, options *option);
+
+void finish();
 
 
 #endif

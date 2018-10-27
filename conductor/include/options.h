@@ -2,7 +2,8 @@
 #define __OPTIONS_H
 
 #include <gtk/gtk.h>
-#include "gui/stream_playback.h"
+#include <webkit2/webkit2.h>
+#include <gst/gst.h>
 
 enum input { hdmi, sdi };
 
@@ -33,6 +34,11 @@ typedef struct _display_settings {
     GtkEntry *entry_pos_x;
     GtkEntry *entry_pos_y;
     GtkButton **btn_pos_apply;
+
+	WebKitWebView *webview;
+	gchar *webview_pause_script;
+	int size;
+	gchar **webview_play_script;
 } display_settings;
 
 typedef struct _decklink_options {

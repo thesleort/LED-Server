@@ -22,6 +22,8 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
     data->convert = gst_element_factory_make("videoconvert", "convert");
     data->sink = gst_element_factory_make("xvimagesink", "sink");
 
+	g_object_set(data->sink, "sync",FALSE, NULL);
+
     printf("Gst element init completed\n");
 
     data->pipeline = gst_pipeline_new("decklink_stream");
