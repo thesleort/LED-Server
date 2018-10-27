@@ -33,3 +33,10 @@ make
 ```bash
 ./conductor.out
 ```
+
+### Decklink using GStreamer
+
+This is the current basic pipeline in use 
+```bash
+gst-launch-1.0 -v decklinkvideosrc mode=0 connection=2 timecode-format=6 ! videoconvert ! xvimagesink
+```
