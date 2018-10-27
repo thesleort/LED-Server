@@ -44,8 +44,9 @@ void activate(GtkApplication *app, gpointer user_data) {
     control_window_init(control_window, option, tab);
     display_window_init(display_window, option);
 
+    // gtk_widget_show_all(control_window);
 
-    gtk_widget_show_all(display_window);
+    // gtk_widget_show_all(display_window);
     gtk_main();
 }
 

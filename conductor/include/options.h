@@ -9,6 +9,9 @@ enum input { hdmi, sdi };
 typedef struct _stream_data {
     gboolean is_live;
     GstElement *pipeline;
+	GstElement *source;
+	GstElement *convert;
+	GstElement *sink;
     GMainLoop *loop;
     GstState state; /* Current state of the pipeline */
     gint64 duration;

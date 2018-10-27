@@ -15,56 +15,80 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
 
     memset(data, 0, sizeof(*data));
     data->duration = GST_CLOCK_TIME_NONE;
+    printf("Gst element init\n");
 
-    data->pipeline = gst_element_factory_make ("playbin", "playbin");
+    // data->pipeline = gst_element_factory_make ("playbin", "playbin");
+    data->source = gst_element_factory_make("decklinkvideosrc", "source");
+    data->convert = gst_element_factory_make("videoconvert", "convert");
+    data->sink = gst_element_factory_make("xvimagesink", "sink");
 
-    if (!data->pipeline) {
+    printf("Gst element init completed\n");
+
+    data->pipeline = gst_pipeline_new("decklink_stream");
+
+    printf("Gst pipeline new done\n");
+
+    if (!data->pipeline || !data->source || !data->convert || !data->sink) {
         g_printerr("Not all elements could be created.\n");
         return -1;
     }
 
-    g_object_set(data->pipeline, "uri", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", NULL);
+    gst_bin_add_many(data->pipeline, data->source, data->convert, data->sink);
 
-    g_signal_connect(G_OBJECT(data->pipeline), "video-tags-changed", (GCallback)tags_cb, &data);
-    g_signal_connect(G_OBJECT(data->pipeline), "audio-tags-changed", (GCallback)tags_cb, &data);
-    g_signal_connect(G_OBJECT(data->pipeline), "text-tags-changed", (GCallback)tags_cb, &data);
+    // g_object_set(data->pipeline, "uri", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", NULL);
+
+    // g_signal_connect(G_OBJECT(data->pipeline), "video-tags-changed", (GCallback)tags_cb, &data);
+    // g_signal_connect(G_OBJECT(data->pipeline), "audio-tags-changed", (GCallback)tags_cb, &data);
+    // g_signal_connect(G_OBJECT(data->pipeline), "text-tags-changed", (GCallback)tags_cb, &data);
+    printf("Stream ui start\n");
 
     setup_stream_ui(grid, window, data);
 
+    printf("Stream ui finish\n");
+
     bus = gst_element_get_bus(data->pipeline);
 
-    gst_bus_add_signal_watch (bus);
+    gst_bus_add_signal_watch(bus);
 
-    ret = gst_element_set_state (data->pipeline, GST_STATE_PLAYING);
+    ret = gst_element_set_state(data->pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE) {
-        g_printerr ("Unable to set the pipeline to the playing state.\n");
-        gst_object_unref (data->pipeline);
+        g_printerr("Unable to set the pipeline to the playing state.\n");
+        gst_object_unref(data->pipeline);
         return -1;
     }
 
+    gst_element_link(data->source, data->convert);
+    gst_element_link(data->convert, data->sink);
+
     /* Register a function that GLib will call every second */
-    g_timeout_add_seconds (1, (GSourceFunc)refresh_ui, &data);
+    g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
 
     printf("streaming\n");
 }
 
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
+    GdkWindow *video_window_xwindow;
     GtkWidget *video_area;
-    GtkWidget *main_hbox;
+    // GtkWidget *main_hbox;
     GtkWidget *main_box;
+    gulong embed_xid;
 
     video_area = GTK_DRAWING_AREA(gtk_drawing_area_new());
     main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    printf("test1\n");
 
     gtk_widget_set_double_buffered(video_area, FALSE);
     gtk_widget_set_size_request(video_area, 896, 512);
 
-    gtk_box_pack_start(GTK_BOX(main_box), video_area, TRUE, TRUE, 0);
-
     gtk_grid_attach(grid, main_box, 0, 0, 100, 1);
 
+	gtk_box_pack_start(main_box, video_area, FALSE, FALSE, 0);
+
+    gtk_widget_realize(window);
+
+
     g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data);
-    g_signal_connect (video_area, "draw", G_CALLBACK (draw_cb), data);
+    g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data);
 }
 
 /*
@@ -95,7 +119,7 @@ gboolean refresh_ui(stream_data *data) {
 void realize_cb(GtkWidget *widget, stream_data *data) {
     printf("Calling: realize_cb\n");
     GdkWindow *window = gtk_widget_get_window(widget);
-    guintptr window_handle;
+    gulong window_handle;
 
     if (!gdk_window_ensure_native(window))
         g_error("Couldn't create native window needed for GstVideoOverlay!");
@@ -103,7 +127,7 @@ void realize_cb(GtkWidget *widget, stream_data *data) {
     printf("err\n");
     /* Pass it to playbin, which implements VideoOverlay and will forward it to the video sink */
     window_handle = GDK_WINDOW_XID(window);
-    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->pipeline), window_handle);
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->sink), window_handle);
 }
 
 gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
@@ -122,10 +146,9 @@ gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
     return FALSE;
 }
 
-
 /* This function is called when the STOP button is clicked */
-void stop_cb (GtkButton *button, stream_data *data) {
-  gst_element_set_state (data->pipeline, GST_STATE_READY);
+void stop_cb(GtkButton *button, stream_data *data) {
+    gst_element_set_state(data->pipeline, GST_STATE_READY);
 }
 
 void pause_cb(stream_data *data) {
