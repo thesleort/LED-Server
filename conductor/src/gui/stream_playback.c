@@ -22,7 +22,10 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
     data->convert = gst_element_factory_make("videoconvert", "convert");
     data->sink = gst_element_factory_make("xvimagesink", "sink");
 
-	g_object_set(data->sink, "sync",FALSE, NULL);
+	// data->pipeline = gst_element_factory_make("playbin","playbin");
+    g_object_set(data->source, "connection", 2, NULL);
+
+    g_object_set(data->sink, "sync", FALSE, NULL);
 
     printf("Gst element init completed\n");
 
@@ -35,7 +38,6 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
         return -1;
     }
 
-    gst_bin_add_many(data->pipeline, data->source, data->convert, data->sink);
 
     // g_object_set(data->pipeline, "uri", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", NULL);
 
@@ -58,6 +60,7 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
         gst_object_unref(data->pipeline);
         return -1;
     }
+    gst_bin_add_many(data->pipeline, data->source, data->convert, data->sink);
 
     gst_element_link(data->source, data->convert);
     gst_element_link(data->convert, data->sink);
@@ -76,7 +79,7 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     gulong embed_xid;
 
     video_area = GTK_DRAWING_AREA(gtk_drawing_area_new());
-    main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     printf("test1\n");
 
     gtk_widget_set_double_buffered(video_area, FALSE);
@@ -84,13 +87,14 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
 
     gtk_grid_attach(grid, main_box, 0, 0, 100, 1);
 
-	gtk_box_pack_start(main_box, video_area, FALSE, FALSE, 0);
+    gtk_box_pack_start(main_box, video_area, FALSE, FALSE, 0);
 
     gtk_widget_realize(window);
 
-
     g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data);
     g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data);
+
+	gtk_widget_show_all(window);
 }
 
 /*

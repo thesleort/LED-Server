@@ -21,7 +21,6 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     Name=Conductor 
     Comment=LED Screen controller
     Exec=$SCRIPTPATH/conductor.out
-    ;Path=
     Icon=$SCRIPTPATH/res/conductor_logo.svg
     Terminal=false
     Type=Application
@@ -34,7 +33,6 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     Name=Conductor Updater
     Comment=Conductor auto updater
     Exec=bash $SCRIPTPATH/misc/autoupdate.sh
-    ;Path=
     Icon=$SCRIPTPATH/res/conductor_update_logo.svg
     Terminal=false
     Type=Application
