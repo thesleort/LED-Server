@@ -21,7 +21,7 @@ void webview(GtkGrid **grid, options *option) {
     printf("Webview setup\n");
 
     web_view = WEBKIT_WEB_VIEW(webkit_web_view_new());
-    webkit_web_view_load_uri(web_view, "http://localhost/");
+    webkit_web_view_load_uri(web_view, "http://www.w3schools.com/html/html5_video.asp");
 
     // grid = GTK_GRID(gtk_grid_new());
     url = GTK_ENTRY(gtk_entry_new());
@@ -56,25 +56,43 @@ void webview(GtkGrid **grid, options *option) {
 }
 
 void load_scripts(options *option) {
-    int size = 0;
+    // int size = 0;
 
-    FILE *fp = fopen("js/pause_video.js", "r");
+    // FILE *fp = fopen("js/pause_video.js", "r");
 
-    fseek(fp, 0, SEEK_END); /* Go to end of file */
-    size = ftell(fp);      /* How many bytes did we pass ? */
+    // fseek(fp, 0, SEEK_END); /* Go to end of file */
+    // size = ftell(fp);      /* How many bytes did we pass ? */
 
-    /* Set position of stream to the beginning */
-    rewind(fp);
+    // /* Set position of stream to the beginning */
+    // rewind(fp);
 
-    /* Allocate the buffer (no need to initialize it with calloc) */
-    option->m_display_settings->webview_pause_script = malloc((size + 1) * sizeof(*option->m_display_settings->webview_pause_script)); /* size + 1 byte for the \0 */
+    // /* Allocate the buffer (no need to initialize it with calloc) */
+    // option->m_display_settings->webview_pause_script = malloc((size) * sizeof(option->m_display_settings->webview_pause_script)); /* size + 1 byte for the \0 */
 
-    /* Read the file into the buffer */
-    fread(option->m_display_settings->webview_pause_script, size, 1, fp); /* Read 1 chunk of size bytes from fp into buffer */
+    // /* Read the file into the buffer */
+    // fread(option->m_display_settings->webview_pause_script, size, 1, fp); /* Read 1 chunk of size bytes from fp into buffer */
 
-    /* NULL-terminate the buffer */
-    option->m_display_settings->webview_pause_script[size] = '\0';
-	option->m_display_settings->size = size;
+    // /* NULL-terminate the buffer */
+    // option->m_display_settings->webview_pause_script[size] = '\0';
+	// option->m_display_settings->size = size;
+	// printf("Script loaded\n");
+
+	// FILE *file = fopen("js/pause_video.js", "r");
+	// fseek(file, 0, 1);
+	gchar *content;
+	gssize length;
+	g_file_get_contents("js/pause_video.js", content, &length, NULL);
+	option->m_display_settings->webview_pause_script = content;
+	option->m_display_settings->size = length;
+
+	// long len = ftell(file);
+	// char *ret = malloc(len);
+
+	// fseek(file, 0, SEEK_SET);
+	// fread(ret, 1, len, file);
+
+	// fclose(file);
+	// option->m_display_settings->webview_pause_script = ret;
 	printf("Script loaded\n");
 
 }

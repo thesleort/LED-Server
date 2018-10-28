@@ -15,16 +15,15 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
 
     # =================================================================
     echo "# Adding icons" ; sleep 1
-    echo "
-    [Desktop Entry]
-    Version=0.2
-    Name=Conductor 
-    Comment=LED Screen controller
-    Exec=$SCRIPTPATH/conductor.out
-    Icon=$SCRIPTPATH/res/conductor_logo.svg
-    Terminal=false
-    Type=Application
-    Categories=Utility;Development;
+    echo "[Desktop Entry]
+Version=0.2
+Name=Conductor 
+Comment=LED Screen controller
+Exec=$SCRIPTPATH/conductor.out
+Icon=$SCRIPTPATH/res/conductor_logo.svg
+Terminal=false
+Type=Application
+Categories=Utility;Development;
     " > conductor.desktop
     echo "55" ; sleep 1
     echo "

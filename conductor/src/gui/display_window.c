@@ -53,27 +53,27 @@ void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {
 
 void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, options *option) {
     printf("Calling: switch_tab_cb\n");
-    char *js = "var iframe = document.querySelector( 'iframe');" 
+    gchar *js =
                "var video = document.querySelector( 'video' );" 
-               "if ( iframe ) {" 
-               "var iframeSrc = iframe.src;" 
-               "iframe.src = iframeSrc;" 
-               "}" 
                "if ( video ) {" 
                "video.pause();" 
                "}";
     WebKitSettings *web_settings = webkit_web_view_get_settings(option->m_display_settings->webview);
+
+	gchar *script;
+
+    script = g_strdup_printf(js);
 	webkit_settings_set_enable_javascript(web_settings, TRUE);
     switch (page_num) {
     case 0:
         printf("page: 0\n");
         play_cb(option->m_decklink_options->m_stream);
         for (int i = 0; i < option->m_display_settings->size; ++i) {
-            printf("%c", option->m_display_settings->webview_pause_script[i]);
+            g_print("%c", option->m_display_settings->webview_pause_script[i]);
         }
         printf("\n");
 		// webkit_web_view_execute_script(option->m_display_settings->webview, js);
-        webkit_web_view_run_javascript(option->m_display_settings->webview, js, NULL, G_CALLBACK(finish), option);
+        webkit_web_view_run_javascript(option->m_display_settings->webview, script, NULL, G_CALLBACK(finish), NULL);
         break;
     case 1:
         printf("page: 1\n");

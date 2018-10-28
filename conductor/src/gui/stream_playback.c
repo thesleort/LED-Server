@@ -17,12 +17,10 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
     data->duration = GST_CLOCK_TIME_NONE;
     printf("Gst element init\n");
 
-    // data->pipeline = gst_element_factory_make ("playbin", "playbin");
     data->source = gst_element_factory_make("decklinkvideosrc", "source");
     data->convert = gst_element_factory_make("videoconvert", "convert");
     data->sink = gst_element_factory_make("xvimagesink", "sink");
 
-	// data->pipeline = gst_element_factory_make("playbin","playbin");
     g_object_set(data->source, "connection", 2, NULL);
 
     g_object_set(data->sink, "sync", FALSE, NULL);
@@ -37,9 +35,6 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
         g_printerr("Not all elements could be created.\n");
         return -1;
     }
-
-
-    // g_object_set(data->pipeline, "uri", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", NULL);
 
     // g_signal_connect(G_OBJECT(data->pipeline), "video-tags-changed", (GCallback)tags_cb, &data);
     // g_signal_connect(G_OBJECT(data->pipeline), "audio-tags-changed", (GCallback)tags_cb, &data);
@@ -74,7 +69,6 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     GdkWindow *video_window_xwindow;
     GtkWidget *video_area;
-    // GtkWidget *main_hbox;
     GtkWidget *main_box;
     gulong embed_xid;
 
