@@ -2,7 +2,7 @@
 
 #include "gui/window.h"
 
-#include "gui/stream_playback.h"
+#include "streamer/stream_playback.h"
 #include "options.h"
 
 
@@ -20,6 +20,8 @@ int main(int argc, char **argv) {
 }
 
 void activate(GtkApplication *app, gpointer user_data) {
+	UNUSED(app);
+	UNUSED(user_data);
     GtkWidget *display_window;
     GtkWidget *control_window;
     GtkNotebook *tab;
@@ -34,7 +36,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     option->m_display_settings = display;
     option->m_decklink_options->m_stream = &stream;
 
-    option->m_display_settings->tab = gtk_notebook_new();
+    option->m_display_settings->tab = GTK_NOTEBOOK(gtk_notebook_new());
     tab = option->m_display_settings->tab;
 
     control_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -52,7 +54,10 @@ void activate(GtkApplication *app, gpointer user_data) {
 
 
 /* This function is called when the main window is closed */
-void delete_event_cb(GtkWidget *widget, GdkEvent *event, stream_data *data) {
-    stop_cb(NULL, data);
+void delete_event_cb(GtkWidget *widget, GdkEvent *event, options *option) {
+    stop_cb(option->m_decklink_options->m_stream);
+	UNUSED(widget);
+	UNUSED(event);
+	// g_object_unref(option->m_display_settings->webview_pause_script);
     gtk_main_quit();
 }

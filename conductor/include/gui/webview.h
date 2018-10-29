@@ -8,13 +8,14 @@
 
 void add_webview(GtkWidget *window, GtkWidget *area);
 
-void webview(GtkGrid **grid, options *option);
+void webview_add(GtkGrid *grid, options *option);
 
 void load_scripts(options *option);
 
-static void url_entry_reset(GtkWidget *widget, gpointer data);
-static void url_entry_query(GtkWidget *widget, gpointer data);
-static void destroyWindowCb(GtkWidget* widget, GtkWidget* window);
-static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window);
+gboolean webview_close_cb(WebKitWebView* webView, GtkWidget* window);
+
+void url_entry_query(GtkWidget *widget, gpointer data);
+void url_entry_reset(GtkWidget *widget, gpointer data);
+// static void destroyWindowCb(GtkWidget* widget, GtkWidget* window);
 
 #endif

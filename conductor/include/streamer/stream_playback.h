@@ -28,11 +28,11 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option);
 
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data);
 
-void tags_cb(GstElement *playbin, gint stream, stream_data *data);
+void tags_cb(GstElement *playbin);
 
 gboolean refresh_ui(stream_data *data);
 
-void stop_cb (GtkButton *button, stream_data *data);
+void stop_cb (stream_data *data);
 
 void pause_cb(stream_data *data);
 

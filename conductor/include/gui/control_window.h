@@ -6,7 +6,7 @@
 #include "gui/window.h"
 #include "options.h"
 
-void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab);
+void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab);
 
 void tab_decklink_cb(GtkButton *button, GtkNotebook *tab);
 

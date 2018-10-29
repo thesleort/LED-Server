@@ -12,6 +12,6 @@ typedef struct _streamData {
 
 int decklink();
 
-static void dcb_message(GstBus *bus, GstMessage *msg, streamData *data);
+// static void dcb_message(GstBus *bus, GstMessage *msg, streamData *data);
 
 #endif

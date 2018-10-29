@@ -3,7 +3,7 @@
 
 GtkEntry *entry_pos_x, *entry_pos_y;
 
-void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab) {
+void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_window_set_title(GTK_WINDOW(window), "LED Server - Control window");
 
     option->display_window = gtk_widget_get_window(tab);
@@ -121,7 +121,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook **tab) 
 
     g_signal_connect(G_OBJECT(btn_hdmi), "clicked", G_CALLBACK(decklink_input_hdmi), option->m_decklink_options);
     g_signal_connect(G_OBJECT(btn_sdi), "clicked", G_CALLBACK(decklink_input_sdi), option->m_decklink_options);
-    g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option->m_decklink_options->m_stream);
+    g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option);
 
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
 
@@ -212,6 +212,7 @@ void set_display_window_pos_cb(GtkButton *button, options *option) {
 }
 
 void gui_lock_cb(GtkButton *button, options *option) {
+	UNUSED(button);
     if (option->m_controls->locked == TRUE) {
         gtk_widget_set_sensitive(option->m_display_settings->btn_pos_apply, TRUE);
         gtk_widget_set_sensitive(option->m_display_settings->entry_pos_x, TRUE);

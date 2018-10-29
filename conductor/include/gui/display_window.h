@@ -3,7 +3,7 @@
 
 #include <gtk/gtk.h>
 
-#include "gui/stream_playback.h"
+#include "streamer/stream_playback.h"
 #include "gui/window.h"
 #include "options.h"
 

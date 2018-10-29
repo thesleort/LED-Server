@@ -5,11 +5,13 @@
 #include <webkit2/webkit2.h>
 #include <gst/gst.h>
 
+#define UNUSED(x) (void)(x)
+
 enum input { hdmi, sdi };
 
 typedef struct _stream_data {
     gboolean is_live;
-    GstElement *pipeline;
+    GstBin *pipeline;
 	GstElement *source;
 	GstElement *convert;
 	GstElement *sink;
@@ -28,7 +30,7 @@ typedef struct _controls {
 } controls;
 
 typedef struct _display_settings {
-    GtkNotebook **tab;
+    GtkNotebook *tab;
     unsigned pos_x;
     unsigned pos_y;
     GtkEntry *entry_pos_x;

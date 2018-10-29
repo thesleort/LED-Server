@@ -10,7 +10,7 @@ GtkEntry *url;
 GtkButton *search_btn;
 WebKitWebView *web_view;
 
-void webview(GtkGrid **grid, options *option) {
+void webview_add(GtkGrid *grid, options *option) {
     // url = malloc(sizeof(GtkEntry));
     option->m_display_settings->webview = webkit_web_view_new();
     url = gtk_entry_new();
@@ -79,11 +79,11 @@ void load_scripts(options *option) {
 
 	// FILE *file = fopen("js/pause_video.js", "r");
 	// fseek(file, 0, 1);
-	gchar *content;
-	gssize length;
-	g_file_get_contents("js/pause_video.js", content, &length, NULL);
-	option->m_display_settings->webview_pause_script = content;
-	option->m_display_settings->size = length;
+	// gchar *content;
+	// gssize length;
+	// g_file_get_contents("js/pause_video.js", content, &length, NULL);
+	// option->m_display_settings->webview_pause_script = content;
+	// option->m_display_settings->size = length;
 
 	// long len = ftell(file);
 	// char *ret = malloc(len);
@@ -97,7 +97,12 @@ void load_scripts(options *option) {
 
 }
 
-static void url_entry_query(GtkWidget *widget, gpointer data) {
+gboolean webview_close_cb(WebKitWebView *web_view, GtkWidget *window) {
+    gtk_widget_destroy(window);
+    return TRUE;
+}
+
+void url_entry_query(GtkWidget *widget, gpointer data) {
     char buf[512];
     snprintf(buf, sizeof(buf), "%s%s", "http://", gtk_entry_get_text(url));
     printf("%s\n", buf);
@@ -109,7 +114,3 @@ static void url_entry_query(GtkWidget *widget, gpointer data) {
 //     gtk_main_quit();
 // }
 
-static gboolean closeWebViewCb(WebKitWebView *web_view, GtkWidget *window) {
-    gtk_widget_destroy(window);
-    return TRUE;
-}
