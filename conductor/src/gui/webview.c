@@ -15,7 +15,7 @@ void webview_add(GtkGrid *grid, options *option) {
     option->m_display_settings->webview = WEBKIT_WEB_VIEW(webkit_web_view_new());
     search_btn = GTK_BUTTON(gtk_button_new());
     // web_view = option->m_display_settings->webview;
-    // load_scripts(option);
+    load_scripts(option);
     // web_view = malloc(sizeof(WebKitWebView));
     printf("Webview setup\n");
 
@@ -54,46 +54,20 @@ void webview_add(GtkGrid *grid, options *option) {
     // gtk_widget_grab_focus(GTK_WIDGET(web_view));
 }
 
-// void load_scripts(options *option) {
-    // int size = 0;
+void load_scripts(options *option) {
+    gchar *pause_video;
+    gchar *play_video;
+    gsize pause_length;
+    gsize play_length;
+    
+    g_file_get_contents("js/pause_video.js", &pause_video, &pause_length, NULL);
+    option->m_display_settings->webview_pause_script = pause_video;
+    option->m_display_settings->pause_size = pause_length;
 
-    // FILE *fp = fopen("js/pause_video.js", "r");
-
-    // fseek(fp, 0, SEEK_END); /* Go to end of file */
-    // size = ftell(fp);      /* How many bytes did we pass ? */
-
-    // /* Set position of stream to the beginning */
-    // rewind(fp);
-
-    // /* Allocate the buffer (no need to initialize it with calloc) */
-    // option->m_display_settings->webview_pause_script = malloc((size) * sizeof(option->m_display_settings->webview_pause_script)); /* size + 1 byte for the \0 */
-
-    // /* Read the file into the buffer */
-    // fread(option->m_display_settings->webview_pause_script, size, 1, fp); /* Read 1 chunk of size bytes from fp into buffer */
-
-    // /* NULL-terminate the buffer */
-    // option->m_display_settings->webview_pause_script[size] = '\0';
-    // option->m_display_settings->size = size;
-    // printf("Script loaded\n");
-
-    // FILE *file = fopen("js/pause_video.js", "r");
-    // fseek(file, 0, 1);
-    // gchar *content = ' ';
-    // gssize length;
-    // g_file_get_contents("js/pause_video.js", content, &length, NULL);
-    // option->m_display_settings->webview_pause_script = content;
-    // option->m_display_settings->size = length;
-
-    // long len = ftell(file);
-    // char *ret = malloc(len);
-
-    // fseek(file, 0, SEEK_SET);
-    // fread(ret, 1, len, file);
-
-    // fclose(file);
-    // option->m_display_settings->webview_pause_script = ret;
-//     printf("Script loaded\n");
-// }
+    g_file_get_contents("js/play_video.js", &play_video, &play_length, NULL);
+    option->m_display_settings->webview_play_script = play_video;
+    option->m_display_settings->play_size = play_length;
+}
 
 gboolean webview_close_cb(WebKitWebView *web_view, GtkWidget *window) {
     UNUSED(web_view);

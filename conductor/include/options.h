@@ -39,8 +39,9 @@ typedef struct _display_settings {
 
 	WebKitWebView *webview;
 	gchar *webview_pause_script;
-	int size;
-	gchar **webview_play_script;
+	int pause_size;
+	gchar *webview_play_script;
+    int play_size;
     GtkEntry *url;
 } display_settings;
 

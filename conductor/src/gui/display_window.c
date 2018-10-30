@@ -59,16 +59,6 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
 	UNUSED(notebook);
 	UNUSED(page);
     printf("Calling: switch_tab_cb\n");
-    gchar *js_pause =
-               "var video = document.querySelector( 'video' );" 
-               "if ( video ) {" 
-               "video.pause();" 
-               "}";
-    gchar *js_play = 
-                "var video = document.querySelector( 'video' );" 
-               "if ( video ) {" 
-               "video.play();" 
-               "}";
     WebKitSettings *web_settings = webkit_web_view_get_settings(option->m_display_settings->webview);
 
 	webkit_settings_set_enable_javascript(web_settings, TRUE);
@@ -76,18 +66,12 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
     case 0:
         printf("page: 0\n");
         play_cb(option->m_decklink_options->m_stream);
-        for (int i = 0; i < option->m_display_settings->size; ++i) {
-            g_print("%c", option->m_display_settings->webview_pause_script[i]);
-        }
-        printf("\n");
-		// webkit_web_view_execute_script(option->m_display_settings->webview, js);
-        webkit_web_view_run_javascript(option->m_display_settings->webview, js_pause, NULL, finish, NULL);
+        webkit_web_view_run_javascript(option->m_display_settings->webview, option->m_display_settings->webview_pause_script, NULL, finish, NULL);
         break;
     case 1:
         printf("page: 1\n");
-        play_cb(option->m_decklink_options->m_stream);
-        webkit_settings_set_enable_media_stream(web_settings, TRUE);
-        webkit_web_view_run_javascript(option->m_display_settings->webview, js_play, NULL, finish, NULL);
+        pause_cb(option->m_decklink_options->m_stream);
+        webkit_web_view_run_javascript(option->m_display_settings->webview, option->m_display_settings->webview_play_script, NULL, finish, NULL);
         break;
     }
 }
