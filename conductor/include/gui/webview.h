@@ -14,7 +14,7 @@ void load_scripts(options *option);
 
 gboolean webview_close_cb(WebKitWebView* webView, GtkWidget* window);
 
-void url_entry_query(GtkWidget *widget, gpointer data);
+void url_entry_query(GtkWidget *widget, display_settings *settings);
 void url_entry_reset(GtkWidget *widget, gpointer data);
 // static void destroyWindowCb(GtkWidget* widget, GtkWidget* window);
 

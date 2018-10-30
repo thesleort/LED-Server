@@ -24,7 +24,7 @@ typedef struct _custom_data {
 
 // static GtkWidget *video_area;
 
-void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option);
+void decklink_stream_gst(options *option);
 
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data);
 

@@ -4,7 +4,7 @@
 
 #include "streamer/stream_playback.h"
 
-void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
+void decklink_stream_gst(options *option) {
     stream_data *data = option->m_decklink_options->m_stream;
     GstBus *bus;
     GstStateChangeReturn ret;
@@ -41,7 +41,6 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
     // g_signal_connect(G_OBJECT(data->pipeline), "text-tags-changed", (GCallback)tags_cb, &data);
     printf("Stream ui start\n");
 
-    setup_stream_ui(grid, window, data);
 
     printf("Stream ui finish\n");
 
@@ -61,9 +60,11 @@ void decklink_stream_gst(GtkGrid *grid, GtkWindow *window, options *option) {
     gst_element_link(data->convert, data->sink);
 
     /* Register a function that GLib will call every second */
-    g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
+    // g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
 
     printf("streaming\n");
+
+    // setup_stream_ui(grid, window, data);
 }
 
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {

@@ -26,7 +26,8 @@ void display_window_init(GtkWidget *window, options *option) {
     // Setup tab: Start
 
     webview_add(webview_grid, option);
-    decklink_stream_gst(stream_grid, GTK_WINDOW(window), option);
+    // decklink_stream_gst(stream_grid, GTK_WINDOW(window), option);
+    setup_stream_ui(stream_grid, GTK_WINDOW(window), option->m_decklink_options->m_stream);
 
     gtk_notebook_set_show_tabs(tab, FALSE);
     gtk_notebook_set_show_border(tab, FALSE);

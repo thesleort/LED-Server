@@ -5,7 +5,7 @@
 #include <webkit2/webkit2.h>
 #include <gst/gst.h>
 
-#define UNUSED(x) (void)(x)
+#define UNUSED(x) (void)(x);
 
 enum input { hdmi, sdi };
 
@@ -22,10 +22,10 @@ typedef struct _stream_data {
 } stream_data;
 
 typedef struct _controls {
-    GtkButton **btn_open_display;
-    GtkButton **btn_tab_switch;
-    GtkButton **btn_decklink;
-    GtkButton **btn_webview;
+    GtkButton *btn_open_display;
+    GtkButton *btn_tab_switch;
+    GtkButton *btn_decklink;
+    GtkButton *btn_webview;
     gboolean locked;
 } controls;
 
@@ -35,17 +35,18 @@ typedef struct _display_settings {
     unsigned pos_y;
     GtkEntry *entry_pos_x;
     GtkEntry *entry_pos_y;
-    GtkButton **btn_pos_apply;
+    GtkButton *btn_pos_apply;
 
 	WebKitWebView *webview;
 	gchar *webview_pause_script;
 	int size;
 	gchar **webview_play_script;
+    GtkEntry *url;
 } display_settings;
 
 typedef struct _decklink_options {
     enum input m_input;
-    GtkButton **btn_other;
+    GtkButton *btn_other;
     GtkLabel *label_current_input;
     stream_data *m_stream;
     GtkButton *btn_hdmi;
