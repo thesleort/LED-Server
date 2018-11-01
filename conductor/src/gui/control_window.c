@@ -175,14 +175,16 @@ void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
     gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
     option->btn_other = button;
     option->m_input = sdi;
-	gint intval;
+	gint* intval;
 	GstElement *cap;
 	cap = gst_bin_get_by_name (GST_BIN (option->m_stream->pipeline), "source");
     gtk_label_set_text(option->label_current_input, "Current input: HDMI");
-	g_object_set(cap, "connection",2, NULL);
+    stop_cb(option->m_stream);
+	g_object_set(option->m_stream->source, "connection",2, NULL);
 	// gst_caps_set_value(cap, "connection","2");
-	g_object_get(option->m_stream->source,"connection", &intval, NULL);
-	printf("%i\n",intval);
+	g_object_get(cap,"connection", &intval, NULL);
+    play_cb(option->m_stream);
+	g_print("%i\n",GPOINTER_TO_INT(intval));
 }
 
 void decklink_input_sdi(GtkButton *button, decklink_options *option) {
@@ -190,14 +192,17 @@ void decklink_input_sdi(GtkButton *button, decklink_options *option) {
     gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
     option->btn_other = button;
     option->m_input = hdmi;
-	gint intval;
+	gint* intval;
 	GstElement *cap;
 	cap = gst_bin_get_by_name (GST_BIN (option->m_stream->pipeline), "source");
     gtk_label_set_text(option->label_current_input, "Current input: SDI");
 	// gst_caps_set_value(cap, "connection","1");
-	g_object_set(cap, "connection",1, NULL);
-	g_object_get(option->m_stream->source,"connection", &intval, NULL);
-	printf("%i\n",intval);
+    stop_cb(option->m_stream);
+	g_object_set(cap, "connection", 1, NULL);
+	g_object_get(cap, "connection", &intval, NULL);
+
+    play_cb(option->m_stream);
+	g_print("%i\n",GPOINTER_TO_INT(intval));
 }
 
 void open_display_window_cb(GtkButton *button, options *option) {

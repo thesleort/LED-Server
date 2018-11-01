@@ -148,12 +148,15 @@ gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
 /* This function is called when the STOP button is clicked */
 void stop_cb(stream_data *data) {
     gst_element_set_state(GST_ELEMENT(data->pipeline), GST_STATE_READY);
+    printf("Stream status: Stopped\n");
 }
 
 void pause_cb(stream_data *data) {
     gst_element_set_state(GST_ELEMENT(data->pipeline), GST_STATE_PAUSED);
+    printf("Stream status: Paused\n");
 }
 
 void play_cb(stream_data *data) {
     gst_element_set_state(GST_ELEMENT(data->pipeline), GST_STATE_PLAYING);
+    printf("Stream status: Playing\n");
 }
