@@ -36,6 +36,7 @@ typedef struct _display_settings {
     GtkEntry *entry_pos_x;
     GtkEntry *entry_pos_y;
     GtkButton *btn_pos_apply;
+    GtkLabel *currently_showing;
 
 	WebKitWebView *webview;
 	gchar *webview_pause_script;

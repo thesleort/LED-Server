@@ -1,6 +1,7 @@
 
 #include "gui/display_window.h"
 #include "gui/webview.h"
+#include "auxiliary.h"
 
 void display_window_init(GtkWidget *window, options *option) {
     GtkNotebook *tab = option->m_display_settings->tab;
@@ -56,12 +57,13 @@ void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {
 }
 
 void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, options *option) {
-	UNUSED(notebook);
+	// UNUSED(notebook);
 	UNUSED(page);
     printf("Calling: switch_tab_cb\n");
     WebKitSettings *web_settings = webkit_web_view_get_settings(option->m_display_settings->webview);
-
+ 
 	webkit_settings_set_enable_javascript(web_settings, TRUE);
+    gtk_label_set_text(option->m_display_settings->currently_showing, gtk_notebook_get_tab_label_text(notebook, page));
     switch (page_num) {
     case 0:
         printf("page: 0\n");

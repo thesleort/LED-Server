@@ -1,5 +1,6 @@
 
 #include "gui/control_window.h"
+#include "auxiliary.h"
 
 GtkEntry *entry_pos_x, *entry_pos_y;
 
@@ -19,6 +20,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     GtkLabel *decklink_label, *webview_label, *controls_label;
     GtkLabel *decklink_label_desc, *decklink_label_current_input;
     GtkLabel *projector_label_desc;
+    GtkLabel *projector_label_showing ,*projector_label_showing_var;
 
     GtkButton *btn_pos_apply;//, *btn_upper_corner;
 
@@ -54,9 +56,13 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     entry_pos_x = GTK_ENTRY(gtk_entry_new());
     entry_pos_y = GTK_ENTRY(gtk_entry_new());
     projector_label_desc = GTK_LABEL(gtk_label_new("Position:"));
+    projector_label_showing = GTK_LABEL(gtk_label_new("Currently showing:"));
+    projector_label_showing_var = GTK_LABEL(gtk_label_new("Decklink"));
+
     option->m_display_settings->entry_pos_x = entry_pos_x;
     option->m_display_settings->entry_pos_y = entry_pos_y;
     option->m_display_settings->btn_pos_apply = btn_pos_apply;
+    option->m_display_settings->currently_showing = projector_label_showing_var;
 
     option->m_controls->btn_open_display = btn_display_open;
     option->m_controls->btn_decklink = btn_decklink;
@@ -97,7 +103,9 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_grid_attach(projector_options, GTK_WIDGET(entry_pos_x), 1, 0, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(entry_pos_y), 2, 0, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(btn_pos_apply), 3, 0, 1, 1);
-    
+    gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing), 0, 2, 1, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing_var), 1, 2, 2, 1);    
+
     decklink_stream_gst(option);
     setup_stream_ui(preview_grid, GTK_WINDOW(window), option->m_decklink_options->m_stream);
 
@@ -106,9 +114,14 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     g_object_set(btn_sdi, "margin", 6, NULL);
     g_object_set(decklink_label_current_input, "margin", 12, NULL);
 
+    g_object_set(controls_box, "margin-bottom", 12, NULL);
+
     g_object_set(projector_label_desc, "margin", 12, NULL);
     g_object_set(entry_pos_x, "margin", 6, NULL);
     g_object_set(entry_pos_y, "margin", 6, NULL);
+    g_object_set(projector_label_showing, "margin", 12, NULL);
+    gtk_label_set_xalign(projector_label_showing, 0.0);
+    gtk_label_set_xalign(projector_label_desc, 0.0);
     gtk_entry_set_width_chars(entry_pos_x, 5);
     gtk_entry_set_width_chars(entry_pos_y, 5);
     gtk_entry_set_placeholder_text(entry_pos_x, "X");
@@ -158,7 +171,7 @@ void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab) {
     }
 }
 	
-void window_decoration_toggle_cb(GtkButton *button, GtkNotebook *tab) {
+void window_decoration_toggle_cb(GtkButton *button, display_settings *tab) {
     UNUSED(button);
 	GdkWindow *window;
 	window = gtk_widget_get_window(GTK_WIDGET(tab));

@@ -10,19 +10,15 @@
 
 void webview_add(GtkGrid *grid, options *option) {
     GtkButton *search_btn;
-    // WebKitWebView *web_view;
-    // url = malloc(sizeof(GtkEntry));
     option->m_display_settings->webview = WEBKIT_WEB_VIEW(webkit_web_view_new());
     search_btn = GTK_BUTTON(gtk_button_new());
-    // web_view = option->m_display_settings->webview;
     load_scripts(option);
-    // web_view = malloc(sizeof(WebKitWebView));
     printf("Webview setup\n");
 
     option->m_display_settings->webview = WEBKIT_WEB_VIEW(webkit_web_view_new());
-    webkit_web_view_load_uri(option->m_display_settings->webview, "http://www.w3schools.com/html/html5_video.asp");
+    // webkit_web_view_load_uri(option->m_display_settings->webview, "http://www.w3schools.com/html/html5_video.asp");
+    webkit_web_view_load_uri(option->m_display_settings->webview, "http://localhost/");
 
-    // grid = GTK_GRID(gtk_grid_new());
     option->m_display_settings->url = GTK_ENTRY(gtk_entry_new());
     search_btn = GTK_BUTTON(gtk_button_new_with_label("Connect"));
 
@@ -39,7 +35,6 @@ void webview_add(GtkGrid *grid, options *option) {
 
     gtk_entry_set_text(option->m_display_settings->url, webkit_web_view_get_uri(option->m_display_settings->webview));
 
-    // gtk_container_add(GTK_CONTAINER(window), GTK_GRID(grid));
 
     g_signal_connect(search_btn, "clicked", G_CALLBACK(url_entry_query), option->m_display_settings);
     g_signal_connect(option->m_display_settings->url, "activate", G_CALLBACK(url_entry_query), option->m_display_settings);
@@ -47,11 +42,7 @@ void webview_add(GtkGrid *grid, options *option) {
     WebKitWebInspector *inspector = webkit_web_view_get_inspector(WEBKIT_WEB_VIEW(option->m_display_settings->webview));
     webkit_web_inspector_show(WEBKIT_WEB_INSPECTOR(inspector));
 
-    // g_signal_connect(window, "destroy", G_CALLBACK(destroyWindowCb), NULL);
     // g_signal_connect(web_view, "close", G_CALLBACK(closeWebViewCb), window);
-
-    // Will get input from mouse and keyboard.
-    // gtk_widget_grab_focus(GTK_WIDGET(web_view));
 }
 
 void load_scripts(options *option) {
@@ -83,7 +74,3 @@ void url_entry_query(GtkWidget *widget, display_settings *settings) {
     webkit_web_view_load_uri(settings->webview, buf);
     gtk_entry_set_placeholder_text(settings->url, webkit_web_view_get_uri(settings->webview));
 }
-
-// static void destroyWindowCb(GtkWidget *widget, GtkWidget *window) {
-//     gtk_main_quit();
-// }
