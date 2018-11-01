@@ -63,6 +63,7 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
     WebKitSettings *web_settings = webkit_web_view_get_settings(option->m_display_settings->webview);
  
 	webkit_settings_set_enable_javascript(web_settings, TRUE);
+    webkit_settings_set_enable_mediasource(web_settings, TRUE);
     gtk_label_set_text(option->m_display_settings->currently_showing, gtk_notebook_get_tab_label_text(notebook, page));
     switch (page_num) {
     case 0:
