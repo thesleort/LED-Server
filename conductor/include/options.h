@@ -5,6 +5,8 @@
 #include <webkit2/webkit2.h>
 #include <gst/gst.h>
 
+#define MAIN_WINDOW "LED Server - Control window"
+
 #define UNUSED(x) (void)(x);
 
 enum input { hdmi, sdi };
@@ -13,8 +15,10 @@ typedef struct _stream_data {
     gboolean is_live;
     GstBin *pipeline;
 	GstElement *source;
+	GstElement *tee;
 	GstElement *convert;
 	GstElement *sink;
+	GstElement *preview_sink;
     GMainLoop *loop;
     GstState state; /* Current state of the pipeline */
     gint64 duration;

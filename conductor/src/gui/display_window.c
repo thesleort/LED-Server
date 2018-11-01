@@ -73,7 +73,7 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
         break;
     case 1:
         printf("page: 1\n");
-        pause_cb(option->m_decklink_options->m_stream);
+        // pause_cb(option->m_decklink_options->m_stream);
         webkit_web_view_run_javascript(option->m_display_settings->webview, option->m_display_settings->webview_play_script, NULL, finish, NULL);
         break;
     }

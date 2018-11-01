@@ -9,6 +9,8 @@ void decklink_stream_gst(options *option) {
     GstBus *bus;
     GstStateChangeReturn ret;
 
+	GstPad *preview_pad;
+
     printf("Init stream\n");
 
     gst_init(0, NULL);
@@ -19,7 +21,9 @@ void decklink_stream_gst(options *option) {
 
     data->source = gst_element_factory_make("decklinkvideosrc", "source");
     data->convert = gst_element_factory_make("videoconvert", "convert");
+    data->tee = gst_element_factory_make("tee", "tee");
     data->sink = gst_element_factory_make("xvimagesink", "sink");
+    data->preview_sink = gst_element_factory_make("xvimagesink", "preview_sink");
 
     g_object_set(data->source, "connection", 2, NULL);
 
@@ -41,7 +45,6 @@ void decklink_stream_gst(options *option) {
     // g_signal_connect(G_OBJECT(data->pipeline), "text-tags-changed", (GCallback)tags_cb, &data);
     printf("Stream ui start\n");
 
-
     printf("Stream ui finish\n");
 
     bus = gst_element_get_bus(GST_ELEMENT(data->pipeline));
@@ -54,13 +57,18 @@ void decklink_stream_gst(options *option) {
         gst_object_unref(data->pipeline);
         return;
     }
-    gst_bin_add_many(data->pipeline, data->source, data->convert, data->sink, NULL);
+    gst_bin_add_many(data->pipeline, data->source, data->convert, data->tee, data->sink, data->preview_sink, NULL);
 
     gst_element_link(data->source, data->convert);
-    gst_element_link(data->convert, data->sink);
+    // gst_element_link(data->convert, data->preview_sink);
+    // gst_element_link(data->convert, data->sink);
+    // gst_element_link(data->source, data->convert);
+    gst_element_link(data->convert, data->tee);
+    gst_element_link(data->tee, data->sink);
+    gst_element_link(data->tee, data->preview_sink);
 
     /* Register a function that GLib will call every second */
-    // g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
+    g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
 
     printf("streaming\n");
 
@@ -80,14 +88,19 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
 
     gtk_grid_attach(grid, GTK_WIDGET(main_box), 0, 0, 100, 1);
 
-    gtk_box_pack_start(main_box, video_area, FALSE, FALSE, 0);
+    gtk_box_pack_start(main_box, video_area, TRUE, TRUE, 0);
 
     gtk_widget_realize(GTK_WIDGET(window));
 
-    g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data);
-    g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data);
+    if (strcmp(gtk_window_get_title(window), MAIN_WINDOW)) {
+        g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data->preview_sink);
+        g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->preview_sink);
+    } else {
+        g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data->sink);
+        g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->sink);
+    }
 
-	gtk_widget_show_all(GTK_WIDGET(window));
+    // gtk_widget_show_all(GTK_WIDGET(window));
 }
 
 /*
@@ -115,7 +128,7 @@ gboolean refresh_ui(stream_data *data) {
     return TRUE;
 }
 
-void realize_cb(GtkWidget *widget, stream_data *data) {
+void realize_cb(GtkWidget *widget, GstElement *sink) {
     printf("Calling: realize_cb\n");
     GdkWindow *window = gtk_widget_get_window(widget);
     gulong window_handle;
@@ -126,7 +139,8 @@ void realize_cb(GtkWidget *widget, stream_data *data) {
     printf("err\n");
     /* Pass it to playbin, which implements VideoOverlay and will forward it to the video sink */
     window_handle = GDK_WINDOW_XID(window);
-    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(data->sink), window_handle);
+
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(sink), window_handle);
 }
 
 gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
@@ -147,16 +161,26 @@ gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data) {
 
 /* This function is called when the STOP button is clicked */
 void stop_cb(stream_data *data) {
-    gst_element_set_state(GST_ELEMENT(data->pipeline), GST_STATE_READY);
+    gst_element_set_state(GST_ELEMENT(data->source), GST_STATE_READY);
     printf("Stream status: Stopped\n");
 }
 
 void pause_cb(stream_data *data) {
-    gst_element_set_state(GST_ELEMENT(data->pipeline), GST_STATE_PAUSED);
+    gst_element_set_state(GST_ELEMENT(data->source), GST_STATE_PAUSED);
     printf("Stream status: Paused\n");
 }
 
 void play_cb(stream_data *data) {
     gst_element_set_state(GST_ELEMENT(data->pipeline), GST_STATE_PLAYING);
     printf("Stream status: Playing\n");
+}
+
+void pause_sink_cb(GstElement *sink) {
+    gst_element_set_state(GST_ELEMENT(sink), GST_STATE_READY);
+    printf("Sink status: Paused\n");
+}
+
+void play_sink_cb(GstElement *sink) {
+    gst_element_set_state(GST_ELEMENT(sink), GST_STATE_PLAYING);
+    printf("Sink status: Paused\n");
 }

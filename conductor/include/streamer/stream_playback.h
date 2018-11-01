@@ -38,7 +38,11 @@ void pause_cb(stream_data *data);
 
 void play_cb(stream_data *data);
 
-void realize_cb(GtkWidget *widget, stream_data *data);
+void pause_sink_cb(GstElement *sink);
+
+void play_sink_cb(GstElement *sink);
+
+void realize_cb(GtkWidget *widget, GstElement *sink);
 
 gboolean draw_cb(GtkWidget *widget, cairo_t *cr, stream_data *data);
 

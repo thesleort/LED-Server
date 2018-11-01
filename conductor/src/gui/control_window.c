@@ -5,7 +5,7 @@
 GtkEntry *entry_pos_x, *entry_pos_y;
 
 void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
-    gtk_window_set_title(GTK_WINDOW(window), "LED Server - Control window");
+    gtk_window_set_title(GTK_WINDOW(window), MAIN_WINDOW);
 
     option->display_window = GTK_WINDOW(gtk_widget_get_window(GTK_WIDGET(tab)));
     option->m_controls->locked = FALSE;
@@ -22,7 +22,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     GtkLabel *projector_label_desc;
     GtkLabel *projector_label_showing ,*projector_label_showing_var;
 
-    GtkButton *btn_pos_apply;//, *btn_upper_corner;
+    GtkButton *btn_pos_apply;// btn_switch_pause_toggle;//, *btn_upper_corner;
 
     GtkButton *btn_tab_switch, *btn_display_open, *btn_webview, *btn_decklink, *btn_lock, *btn_hdmi, *btn_sdi;
 
@@ -76,7 +76,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     option->m_decklink_options->btn_sdi = btn_sdi;
     gtk_widget_set_sensitive(GTK_WIDGET(btn_sdi), FALSE);
 
-    gtk_box_pack_start(vbox, GTK_WIDGET(preview_grid), TRUE, TRUE, 10);
+    gtk_box_pack_start(vbox, GTK_WIDGET(preview_grid), FALSE, FALSE, 0);
 
     gtk_box_pack_start(vbox, GTK_WIDGET(decklink_label), FALSE, FALSE, 5);
     gtk_box_pack_start(vbox, GTK_WIDGET(decklink_options), TRUE, TRUE, 10);
