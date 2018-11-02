@@ -15,14 +15,14 @@ void display_window_init(GtkWidget *window, options *option) {
     GtkGrid *stream_grid;
     GtkLabel *stream_label;
 
-    gtk_window_set_title(GTK_WINDOW(window), "LED Server - Display window");
+    gtk_window_set_title(GTK_WINDOW(window), DISPLAY_WINDOW);
     gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
 
     webview_grid = GTK_GRID(gtk_grid_new());
-    webview_label = GTK_LABEL(gtk_label_new("Webview"));
+    webview_label = GTK_LABEL(gtk_label_new(S_PROJECTOR_WEB_VIEW));
 
     stream_grid = GTK_GRID(gtk_grid_new());
-    stream_label = GTK_LABEL(gtk_label_new("Decklink"));
+    stream_label = GTK_LABEL(gtk_label_new(S_PROJECTOR_VIDEO_STREAM));
 
     // Setup tab: Start
 

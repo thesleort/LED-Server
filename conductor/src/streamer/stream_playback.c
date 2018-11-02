@@ -9,7 +9,7 @@ void decklink_stream_gst(options *option) {
     GstBus *bus;
     GstStateChangeReturn ret;
 
-	GstPad *preview_pad;
+	// GstPad *preview_pad;
 
     printf("Init stream\n");
 
@@ -25,7 +25,7 @@ void decklink_stream_gst(options *option) {
     data->sink = gst_element_factory_make("xvimagesink", "sink");
     data->preview_sink = gst_element_factory_make("xvimagesink", "preview_sink");
 
-    g_object_set(data->source, "connection", 2, NULL);
+    g_object_set(data->source, "connection", 1, NULL);
 
     g_object_set(data->sink, "sync", FALSE, NULL);
 

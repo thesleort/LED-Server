@@ -6,6 +6,9 @@
 #include <gst/gst.h>
 
 #define MAIN_WINDOW "LED Server - Control window"
+#define DISPLAY_WINDOW "LED Server - Display window"
+#define S_PROJECTOR_VIDEO_STREAM "Video stream"
+#define S_PROJECTOR_WEB_VIEW "Webview"
 
 #define UNUSED(x) (void)(x);
 

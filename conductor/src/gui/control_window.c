@@ -46,9 +46,9 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     btn_sdi = GTK_BUTTON(gtk_button_new_with_label("SDI Input"));
 
     btn_display_open = GTK_BUTTON(gtk_button_new_with_label("Open player"));
-    btn_decklink = GTK_BUTTON(gtk_button_new_with_label("Video stream"));
+    btn_decklink = GTK_BUTTON(gtk_button_new_with_label(S_PROJECTOR_VIDEO_STREAM));
     btn_tab_switch = GTK_BUTTON(gtk_button_new_with_label("Switch"));
-    btn_webview = GTK_BUTTON(gtk_button_new_with_label("Projector"));
+    btn_webview = GTK_BUTTON(gtk_button_new_with_label(S_PROJECTOR_WEB_VIEW));
     btn_lock = GTK_BUTTON(gtk_button_new_with_label("LOCK"));
 
     btn_pos_apply = GTK_BUTTON(gtk_button_new_with_label("Apply"));
@@ -57,7 +57,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     entry_pos_y = GTK_ENTRY(gtk_entry_new());
     projector_label_desc = GTK_LABEL(gtk_label_new("Position:"));
     projector_label_showing = GTK_LABEL(gtk_label_new("Currently showing:"));
-    projector_label_showing_var = GTK_LABEL(gtk_label_new("Decklink"));
+    projector_label_showing_var = GTK_LABEL(gtk_label_new(S_PROJECTOR_VIDEO_STREAM));
 
     option->m_display_settings->entry_pos_x = entry_pos_x;
     option->m_display_settings->entry_pos_y = entry_pos_y;
