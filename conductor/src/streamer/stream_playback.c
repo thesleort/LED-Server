@@ -93,13 +93,13 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     gtk_widget_realize(GTK_WIDGET(window));
 
     if (strcmp(gtk_window_get_title(window), MAIN_WINDOW)) {
-        g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data->preview_sink);
+        printf("Setting up: Preview display\n");
         g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->preview_sink);
     } else {
-        g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data->sink);
+        printf("Setting up: Display window\n");
         g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->sink);
     }
-
+    g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data);
     // gtk_widget_show_all(GTK_WIDGET(window));
 }
 
