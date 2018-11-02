@@ -23,7 +23,7 @@ INC		= -I$(INC_DIR)/
 OBJROOT = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 OBJ 	= $(OBJROOT:$(SRC_DIR)/*/%.c=$(OBJ_DIR)/*/%.o)
 
-MODULES = $(filter-out $(MOD_DIR)/README.md $(wildcard $(SRC_DIR)/*.c), $(wildcard $(SRC_DIR)/*/), $(wildcard $(INC_DIR)/*.h))
+MODULES = $(filter-out $(MOD_DIR)/README.md $(wildcard $(SRC_DIR)/*.c) $(wildcard $(INC_DIR)/*.h), $(wildcard $(SRC_DIR)/*/))
 
 all: $(EXE)
 
