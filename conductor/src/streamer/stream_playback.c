@@ -8,8 +8,8 @@ void decklink_stream_gst(options *option) {
     stream_data *data = option->m_decklink_options->m_stream;
     GstBus *bus;
     GstStateChangeReturn ret;
-
-	GstPad *preview_pad;
+    GstPad *tee_projector_pad, *tee_preview_pad;
+    GstPad *projector_pad, *preview_pad;
 
     printf("Init stream\n");
 
@@ -59,13 +59,27 @@ void decklink_stream_gst(options *option) {
     }
     gst_bin_add_many(data->pipeline, data->source, data->convert, data->tee, data->sink, data->preview_sink, NULL);
 
-    gst_element_link(data->source, data->convert);
-    // gst_element_link(data->convert, data->preview_sink);
-    // gst_element_link(data->convert, data->sink);
     // gst_element_link(data->source, data->convert);
-    gst_element_link(data->convert, data->tee);
-    gst_element_link(data->tee, data->sink);
-    gst_element_link(data->tee, data->preview_sink);
+    // // gst_element_link(data->convert, data->preview_sink);
+    // // gst_element_link(data->convert, data->sink);
+    // // gst_element_link(data->source, data->convert);
+    // gst_element_link(data->convert, data->tee);
+    // gst_element_link(data->tee, data->sink);
+    // gst_element_link(data->tee, data->preview_sink);
+
+    gst_element_link_many(data->source, data->convert, data->tee, NULL);
+    gst_element_link_many(data->sink, NULL);
+    gst_element_link_many(data->preview_sink, NULL);
+
+    /* Link tee request pads */
+    tee_projector_pad = gst_element_get_request_pad(data->tee, "src_%u");
+    projector_pad = gst_element_get_static_pad(data->sink, "sink");
+
+    tee_preview_pad = gst_element_get_request_pad(data->preview_sink, "src_%u");
+    preview_pad = gst_element_get_static_pad(data->preview_sink, "sink");
+
+    gst_pad_link(tee_projector_pad, projector_pad);
+    gst_pad_link(tee_preview_pad, preview_pad);
 
     /* Register a function that GLib will call every second */
     g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
