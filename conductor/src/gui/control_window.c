@@ -158,6 +158,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
 
     g_signal_connect(btn_url_search, "clicked", G_CALLBACK(url_entry_query), option);
     g_signal_connect(btn_url_save, "clicked", G_CALLBACK(url_entry_save), option);
+    g_signal_connect(option->m_display_settings->entry_url, "activate", G_CALLBACK(url_entry_query), option);
 
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
 
