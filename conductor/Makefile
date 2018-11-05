@@ -5,7 +5,7 @@ SRC_DIR = src
 OBJ_DIR = build
 INC_DIR = include
 
-PKG = gtk+-3.0 webkit2gtk-4.0 gstreamer-1.0 gstreamer-video-1.0
+PKG = gtk+-3.0 webkit2gtk-4.0 gstreamer-1.0 gstreamer-video-1.0 libconfig
 
 LIB = $(LDFLAGS)
 

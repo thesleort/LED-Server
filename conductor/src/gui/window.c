@@ -43,6 +43,9 @@ void activate(GtkApplication *app, gpointer user_data) {
         option->m_display_settings = display;
         option->m_decklink_options->m_stream = &stream;
 
+        config_init(&option->cfg);
+        config_read_file(&option->cfg, "conductor.cfg");    
+
         option->m_display_settings->tab = GTK_NOTEBOOK(gtk_notebook_new());
         tab = option->m_display_settings->tab;
 

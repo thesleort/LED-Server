@@ -4,11 +4,14 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 #include <gst/gst.h>
+#include <libconfig.h>
 
 #define MAIN_WINDOW "LED Server - Control window"
 #define DISPLAY_WINDOW "LED Server - Display window"
 #define S_PROJECTOR_VIDEO_STREAM "Video stream"
 #define S_PROJECTOR_WEB_VIEW "Webview"
+
+#define CONFIG_FILE "conductor.cfg"
 
 #define UNUSED(x) (void)(x);
 
@@ -45,12 +48,13 @@ typedef struct _display_settings {
     GtkButton *btn_pos_apply;
     GtkLabel *currently_showing;
 
+    gchar *website_url;
 	WebKitWebView *webview;
 	gchar *webview_pause_script;
 	int pause_size;
 	gchar *webview_play_script;
     int play_size;
-    GtkEntry *url;
+    GtkEntry *entry_url;
 } display_settings;
 
 typedef struct _decklink_options {
@@ -68,6 +72,7 @@ typedef struct _options {
     display_settings *m_display_settings;
     GtkWindow *display_window;
     gboolean is_display_open;
+    config_t cfg;
 } options;
 
 #endif

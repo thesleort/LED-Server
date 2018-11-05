@@ -1,5 +1,6 @@
 
 #include "gui/control_window.h"
+#include "gui/webview.h"
 #include "auxiliary.h"
 
 GtkEntry *entry_pos_x, *entry_pos_y;
@@ -21,6 +22,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     GtkLabel *decklink_label_desc, *decklink_label_current_input;
     GtkLabel *projector_label_desc;
     GtkLabel *projector_label_showing ,*projector_label_showing_var;
+    GtkButton *btn_url_search, *btn_url_save;
 
     GtkButton *btn_pos_apply;// btn_switch_pause_toggle;//, *btn_upper_corner;
 
@@ -58,6 +60,9 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     projector_label_desc = GTK_LABEL(gtk_label_new("Position:"));
     projector_label_showing = GTK_LABEL(gtk_label_new("Currently showing:"));
     projector_label_showing_var = GTK_LABEL(gtk_label_new(S_PROJECTOR_VIDEO_STREAM));
+    option->m_display_settings->entry_url = GTK_ENTRY(gtk_entry_new());
+    btn_url_search = GTK_BUTTON(gtk_button_new_with_label("Search"));
+    btn_url_save = GTK_BUTTON(gtk_button_new_with_label("Save URL"));
 
     option->m_display_settings->entry_pos_x = entry_pos_x;
     option->m_display_settings->entry_pos_y = entry_pos_y;
@@ -105,6 +110,9 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_grid_attach(projector_options, GTK_WIDGET(btn_pos_apply), 3, 0, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing), 0, 2, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing_var), 1, 2, 2, 1);    
+    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_url), 0, 3, 2, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(btn_url_search), 2, 3, 1, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(btn_url_save), 3, 3, 1, 1);
 
     decklink_stream_gst(option);
     setup_stream_ui(preview_grid, GTK_WINDOW(window), option->m_decklink_options->m_stream);
@@ -128,6 +136,9 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_entry_set_placeholder_text(entry_pos_y, "Y");
     gtk_entry_set_input_purpose(entry_pos_x, GTK_INPUT_PURPOSE_NUMBER);
     gtk_entry_set_input_purpose(entry_pos_y, GTK_INPUT_PURPOSE_NUMBER);
+    gtk_widget_set_size_request(GTK_WIDGET(option->m_display_settings->entry_url), 500, 30);
+    g_object_set(option->m_display_settings->entry_url, "margin", 6, NULL);
+    // gtk_entry_set_placeholder_text(option->m_display_settings->url, webkit_web_view_get_uri(option->m_display_settings->webview));
 
     g_signal_connect(G_OBJECT(btn_pos_apply), "clicked", G_CALLBACK(set_display_window_pos_cb), option);
 
@@ -144,6 +155,9 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     g_signal_connect(G_OBJECT(btn_hdmi), "clicked", G_CALLBACK(decklink_input_hdmi), option->m_decklink_options);
     g_signal_connect(G_OBJECT(btn_sdi), "clicked", G_CALLBACK(decklink_input_sdi), option->m_decklink_options);
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option);
+
+    g_signal_connect(btn_url_search, "clicked", G_CALLBACK(url_entry_query), option);
+    g_signal_connect(btn_url_save, "clicked", G_CALLBACK(url_entry_save), option);
 
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
 
