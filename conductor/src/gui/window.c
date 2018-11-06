@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
+#include <sys/stat.h>
 
 #include "gui/window.h"
-
 #include "streamer/stream_playback.h"
 #include "options.h"
 
@@ -44,14 +44,23 @@ void activate(GtkApplication *app, gpointer user_data) {
         option->m_display_settings = display;
         option->m_decklink_options->m_stream = &stream;
 
-		sprintf(option->file_cfg, "%s/.config/conductor/%s", getenv("HOME"),CONFIG_FILE);
+		sprintf(option->file_cfg, "%s/.config/conductor/%s", getenv("HOME"), CONFIG_FILE);
         config_init(&option->cfg);
 		
+	printf("WORKING, %s\n", option->file_cfg);
 		FILE *file = fopen(option->file_cfg, "r+");
+
+		// In case config does not exist
+		if(file == NULL) {
+			char path[128];
+			sprintf(path, "%s/.config/conductor/", getenv("HOME"));
+			mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			file = fopen(option->file_cfg, "w+");
+		}
         config_read(&option->cfg, file);   
+
 		fclose(file);
 		// fclose(file);
-
 
         if(!config_lookup_string(&option->cfg, "url", (const char**) &option->m_display_settings->website_url)) {
             option->m_display_settings->website_url = "localhost";
