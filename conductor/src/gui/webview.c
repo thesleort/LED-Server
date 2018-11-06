@@ -32,7 +32,7 @@ void webview_add(GtkGrid *grid, options *option) {
 
     gtk_grid_attach(grid, GTK_WIDGET(option->m_display_settings->webview), 0, 0, 100, 1);
 
-    gtk_entry_set_text(option->m_display_settings->entry_url, webkit_web_view_get_uri(option->m_display_settings->webview));
+    // gtk_entry_set_text(option->m_display_settings->entry_url, webkit_web_view_get_uri(option->m_display_settings->webview));
 
     // g_signal_connect(option->m_display_settings->webview, "activate", G_CALLBACK(url_entry_query), option);
 
@@ -82,7 +82,6 @@ void url_entry_save(GtkWidget *widget, options *option) {
     char buf[512];
     snprintf(buf, sizeof(buf), "%s", gtk_entry_get_text(option->m_display_settings->entry_url));
     config_setting_t *setting = config_lookup(&option->cfg, "url");
-    printf("ERROR: \n");
     if(!setting) {
         config_setting_t *root = config_root_setting(&option->cfg);
         setting = config_setting_add(root, "url", CONFIG_TYPE_STRING);
