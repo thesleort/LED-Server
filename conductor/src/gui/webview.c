@@ -82,6 +82,11 @@ void url_entry_save(GtkWidget *widget, options *option) {
     char buf[512];
     snprintf(buf, sizeof(buf), "%s", gtk_entry_get_text(option->m_display_settings->entry_url));
     config_setting_t *setting = config_lookup(&option->cfg, "url");
+    printf("ERROR: \n");
+    if(!setting) {
+        config_setting_t *root = config_root_setting(&option->cfg);
+        setting = config_setting_add(root, "url", CONFIG_TYPE_STRING);
+    }
     printf("SETTING: %i\n", config_setting_set_string(setting, buf));
     config_write_file(&option->cfg, CONFIG_FILE);
     gtk_entry_set_placeholder_text(option->m_display_settings->entry_url, webkit_web_view_get_uri(option->m_display_settings->webview));

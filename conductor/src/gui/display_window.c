@@ -44,6 +44,8 @@ void display_window_init(GtkWidget *window, options *option) {
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(display_close_cb), option);
 
     gtk_widget_show_all(window);
+
+    gtk_window_move(window, option->m_display_settings->pos_x, option->m_display_settings->pos_y);
 }
 
 void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {

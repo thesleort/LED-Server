@@ -68,6 +68,8 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     option->m_display_settings->entry_pos_y = entry_pos_y;
     option->m_display_settings->btn_pos_apply = btn_pos_apply;
     option->m_display_settings->currently_showing = projector_label_showing_var;
+    option->m_display_settings->btn_url_search = btn_url_search;
+    option->m_display_settings->btn_url_save = btn_url_save;
 
     option->m_controls->btn_open_display = btn_display_open;
     option->m_controls->btn_decklink = btn_decklink;
@@ -134,6 +136,8 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_entry_set_width_chars(entry_pos_y, 5);
     gtk_entry_set_placeholder_text(entry_pos_x, "X");
     gtk_entry_set_placeholder_text(entry_pos_y, "Y");
+    gtk_entry_set_text(entry_pos_x, g_strdup_printf("%i", option->m_display_settings->pos_x));
+    gtk_entry_set_text(entry_pos_y, g_strdup_printf("%i", option->m_display_settings->pos_y));
     gtk_entry_set_input_purpose(entry_pos_x, GTK_INPUT_PURPOSE_NUMBER);
     gtk_entry_set_input_purpose(entry_pos_y, GTK_INPUT_PURPOSE_NUMBER);
     gtk_widget_set_size_request(GTK_WIDGET(option->m_display_settings->entry_url), 500, 30);
@@ -250,8 +254,27 @@ void open_display_window_cb(GtkButton *button, options *option) {
 
 void set_display_window_pos_cb(GtkButton *button, options *option) {
     UNUSED(button);
-    option->m_display_settings->pos_x = atoi(gtk_entry_get_text(entry_pos_x));
-    option->m_display_settings->pos_y = atoi(gtk_entry_get_text(entry_pos_y));
+    int pos_x = atoi(gtk_entry_get_text(entry_pos_x));
+    int pos_y = atoi(gtk_entry_get_text(entry_pos_y));
+
+    option->m_display_settings->pos_x = pos_x;
+    option->m_display_settings->pos_y = pos_y;
+    config_setting_t *setting, *root;
+
+    root = config_root_setting(&option->cfg);
+
+    setting = config_lookup(&option->cfg, "display_x");
+    if(!setting) {
+        setting = config_setting_add(root, "display_x", CONFIG_TYPE_INT);
+    }
+    config_setting_set_int(setting, pos_x);
+    
+    setting = config_lookup(&option->cfg, "display_y");
+    if(!setting) {
+        setting = config_setting_add(root, "display_y", CONFIG_TYPE_INT);
+    }
+    config_setting_set_int(setting, pos_y);
+    config_write_file(&option->cfg, CONFIG_FILE);
 
     gtk_window_move(option->display_window, option->m_display_settings->pos_x, option->m_display_settings->pos_y);
     printf("moved window to %i,%i\n", option->m_display_settings->pos_x, option->m_display_settings->pos_y);
@@ -266,6 +289,10 @@ void gui_lock_cb(GtkButton *button, options *option) {
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_decklink_options->btn_hdmi), TRUE);
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_decklink_options->btn_sdi), TRUE);
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_decklink_options->btn_other), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->entry_url), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->btn_url_search), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->btn_url_save), TRUE);
+
         option->m_controls->locked = FALSE;
         printf("State: Unlocked\n");
     } else {
@@ -274,6 +301,9 @@ void gui_lock_cb(GtkButton *button, options *option) {
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->entry_pos_y), FALSE);
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_decklink_options->btn_hdmi), FALSE);
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_decklink_options->btn_sdi), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->entry_url), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->btn_url_search), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->btn_url_save), FALSE);
         option->m_controls->locked = TRUE;
         printf("State: Locked\n");
     }

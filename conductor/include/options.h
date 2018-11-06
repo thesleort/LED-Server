@@ -55,6 +55,8 @@ typedef struct _display_settings {
 	gchar *webview_play_script;
     int play_size;
     GtkEntry *entry_url;
+    GtkButton *btn_url_search;
+    GtkButton *btn_url_save;
 } display_settings;
 
 typedef struct _decklink_options {

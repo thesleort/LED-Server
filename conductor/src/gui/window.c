@@ -46,6 +46,17 @@ void activate(GtkApplication *app, gpointer user_data) {
         config_init(&option->cfg);
         config_read_file(&option->cfg, "conductor.cfg");    
 
+        if(!config_lookup_string(&option->cfg, "url", (const char**) &option->m_display_settings->website_url)) {
+            option->m_display_settings->website_url = "localhost";
+        }
+        if(!config_lookup_int(&option->cfg, "display_x", (int*) &option->m_display_settings->pos_x)) {
+            option->m_display_settings->pos_x = 200;
+        }
+        if(!config_lookup_int(&option->cfg, "display_y", (int*) &option->m_display_settings->pos_y)) {
+            option->m_display_settings->pos_y = 200;
+        }
+        
+
         option->m_display_settings->tab = GTK_NOTEBOOK(gtk_notebook_new());
         tab = option->m_display_settings->tab;
 
