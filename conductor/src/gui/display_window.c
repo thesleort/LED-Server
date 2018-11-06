@@ -45,7 +45,7 @@ void display_window_init(GtkWidget *window, options *option) {
 
     gtk_widget_show_all(window);
 
-    gtk_window_move(window, option->m_display_settings->pos_x, option->m_display_settings->pos_y);
+    gtk_window_move(GTK_WINDOW(window), option->m_display_settings->pos_x, option->m_display_settings->pos_y);
 }
 
 void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {

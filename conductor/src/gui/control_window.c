@@ -274,8 +274,9 @@ void set_display_window_pos_cb(GtkButton *button, options *option) {
         setting = config_setting_add(root, "display_y", CONFIG_TYPE_INT);
     }
     config_setting_set_int(setting, pos_y);
-    config_write_file(&option->cfg, CONFIG_FILE);
-
+	FILE *file = fopen(option->file_cfg, "w+");
+    config_write(&option->cfg, file);
+	fclose(file);
     gtk_window_move(option->display_window, option->m_display_settings->pos_x, option->m_display_settings->pos_y);
     printf("moved window to %i,%i\n", option->m_display_settings->pos_x, option->m_display_settings->pos_y);
 }

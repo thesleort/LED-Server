@@ -75,6 +75,7 @@ typedef struct _options {
     GtkWindow *display_window;
     gboolean is_display_open;
     config_t cfg;
+	char file_cfg[128];
 } options;
 
 #endif

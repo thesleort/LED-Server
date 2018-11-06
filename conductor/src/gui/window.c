@@ -33,6 +33,7 @@ void activate(GtkApplication *app, gpointer user_data) {
         GtkWidget *control_window;
         GtkNotebook *tab;
         stream_data stream;
+		// char path[128];
 
         options *option = (options *)malloc(sizeof(options));
         decklink_options *d_option = (decklink_options *)malloc(sizeof(decklink_options));
@@ -43,8 +44,14 @@ void activate(GtkApplication *app, gpointer user_data) {
         option->m_display_settings = display;
         option->m_decklink_options->m_stream = &stream;
 
+		sprintf(option->file_cfg, "%s/.config/conductor/%s", getenv("HOME"),CONFIG_FILE);
         config_init(&option->cfg);
-        config_read_file(&option->cfg, "conductor.cfg");    
+		
+		FILE *file = fopen(option->file_cfg, "r+");
+        config_read(&option->cfg, file);   
+		fclose(file);
+		// fclose(file);
+
 
         if(!config_lookup_string(&option->cfg, "url", (const char**) &option->m_display_settings->website_url)) {
             option->m_display_settings->website_url = "localhost";

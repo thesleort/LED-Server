@@ -87,6 +87,8 @@ void url_entry_save(GtkWidget *widget, options *option) {
         setting = config_setting_add(root, "url", CONFIG_TYPE_STRING);
     }
     printf("SETTING: %i\n", config_setting_set_string(setting, buf));
-    config_write_file(&option->cfg, CONFIG_FILE);
+	FILE *file = fopen(option->file_cfg, "w+");
+    config_write(&option->cfg, file);
+	fclose(file);
     gtk_entry_set_placeholder_text(option->m_display_settings->entry_url, webkit_web_view_get_uri(option->m_display_settings->webview));
 }
