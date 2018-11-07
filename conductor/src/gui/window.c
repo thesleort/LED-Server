@@ -33,7 +33,6 @@ void activate(GtkApplication *app, gpointer user_data) {
         GtkWidget *control_window;
         GtkNotebook *tab;
         stream_data stream;
-		// char path[128];
 
         options *option = (options *)malloc(sizeof(options));
         decklink_options *d_option = (decklink_options *)malloc(sizeof(decklink_options));
@@ -60,7 +59,6 @@ void activate(GtkApplication *app, gpointer user_data) {
         config_read(&option->cfg, file);   
 
 		fclose(file);
-		// fclose(file);
 
         if(!config_lookup_string(&option->cfg, "url", (const char**) &option->m_display_settings->website_url)) {
             option->m_display_settings->website_url = "localhost";
@@ -83,9 +81,8 @@ void activate(GtkApplication *app, gpointer user_data) {
         control_window_init(control_window, option, tab);
         display_window_init(display_window, option);
 
-        // gtk_widget_show_all(control_window);
         gtk_window_set_application(GTK_WINDOW(control_window), app);
-        // gtk_widget_show_all(display_window);
+        
         gtk_main();
     }
 }
@@ -95,6 +92,5 @@ void delete_event_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     stop_cb(option->m_decklink_options->m_stream);
     UNUSED(widget);
     UNUSED(event);
-    // g_object_unref(option->m_display_settings->webview_pause_script);
     gtk_main_quit();
 }

@@ -6,9 +6,6 @@
 #include "gui/webview.h"
 #include "options.h"
 
-// GtkBox *grid;
-// GtkEntry *url;
-
 void webview_add(GtkGrid *grid, options *option) {
     option->m_display_settings->webview = WEBKIT_WEB_VIEW(webkit_web_view_new());
     load_scripts(option);
@@ -21,9 +18,6 @@ void webview_add(GtkGrid *grid, options *option) {
 
     url_entry_query(NULL, option);
 
-    // option->m_display_settings->url = GTK_ENTRY(gtk_entry_new());
-    // search_btn = GTK_BUTTON(gtk_button_new_with_label("Connect"));
-
     gtk_widget_set_size_request(GTK_WIDGET(option->m_display_settings->webview), 1500, 550);
 
     gtk_entry_set_text(option->m_display_settings->entry_url, option->m_display_settings->website_url);
@@ -32,14 +26,8 @@ void webview_add(GtkGrid *grid, options *option) {
 
     gtk_grid_attach(grid, GTK_WIDGET(option->m_display_settings->webview), 0, 0, 100, 1);
 
-    // gtk_entry_set_text(option->m_display_settings->entry_url, webkit_web_view_get_uri(option->m_display_settings->webview));
-
-    // g_signal_connect(option->m_display_settings->webview, "activate", G_CALLBACK(url_entry_query), option);
-
     WebKitWebInspector *inspector = webkit_web_view_get_inspector(WEBKIT_WEB_VIEW(option->m_display_settings->webview));
     webkit_web_inspector_show(WEBKIT_WEB_INSPECTOR(inspector));
-
-    // g_signal_connect(web_view, "close", G_CALLBACK(closeWebViewCb), window);
 }
 
 void load_scripts(options *option) {

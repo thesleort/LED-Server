@@ -9,20 +9,17 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     option->display_window = GTK_WINDOW(gtk_widget_get_window(GTK_WIDGET(tab)));
     option->m_controls->locked = FALSE;
 
-    GtkBox *vbox, *webview_options, *controls_box;
-    GtkGrid *decklink_options, *projector_options;
-
-    GtkGrid *preview_grid;
+    GtkBox *vbox, *controls_box;
+    GtkGrid *decklink_options, *projector_options, *preview_grid;
 
     GtkLabel *decklink_label, *webview_label, *controls_label;
 
-    vbox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
     decklink_options = GTK_GRID(gtk_grid_new());
     projector_options = GTK_GRID(gtk_grid_new());
-    webview_options = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10));
-    controls_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30));
-
     preview_grid = GTK_GRID(gtk_grid_new());
+
+    vbox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
+    controls_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30));
 
     decklink_label = GTK_LABEL(gtk_label_new("- Video stream -"));
     webview_label = GTK_LABEL(gtk_label_new("- Projector -"));
@@ -41,8 +38,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
 
     video_stream_control_add(projector_options, option);
     gtk_box_pack_start(vbox, GTK_WIDGET(webview_label), FALSE, FALSE, 0);
-    gtk_box_pack_start(vbox, GTK_WIDGET(webview_options), TRUE, TRUE, 0);
-    gtk_box_pack_start(webview_options, GTK_WIDGET(projector_options), TRUE, TRUE, 0);
+    gtk_box_pack_start(vbox, GTK_WIDGET(projector_options), TRUE, TRUE, 0);
 
 
     controls_add(controls_box, option, tab);
