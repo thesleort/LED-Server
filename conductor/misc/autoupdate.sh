@@ -20,7 +20,7 @@ sleep 1 && wmctrl -r "Conductor Updater" -b add,above &
 
     # =================================================================
     echo "# Downloading new version" ; sleep 1
-    git pull
+    (cd "$SCRIPTPATH/../" && git pull)
     echo "50"
     
     # =================================================================
