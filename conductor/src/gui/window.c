@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
+#include <sys/stat.h>
 
 #include "gui/window.h"
-
 #include "streamer/stream_playback.h"
 #include "options.h"
 
@@ -43,6 +43,34 @@ void activate(GtkApplication *app, gpointer user_data) {
         option->m_display_settings = display;
         option->m_decklink_options->m_stream = &stream;
 
+		sprintf(option->file_cfg, "%s/.config/conductor/%s", getenv("HOME"), CONFIG_FILE);
+        config_init(&option->cfg);
+		
+	printf("WORKING, %s\n", option->file_cfg);
+		FILE *file = fopen(option->file_cfg, "r+");
+
+		// In case config does not exist
+		if(file == NULL) {
+			char path[128];
+			sprintf(path, "%s/.config/conductor/", getenv("HOME"));
+			mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			file = fopen(option->file_cfg, "w+");
+		}
+        config_read(&option->cfg, file);   
+
+		fclose(file);
+
+        if(!config_lookup_string(&option->cfg, "url", (const char**) &option->m_display_settings->website_url)) {
+            option->m_display_settings->website_url = "localhost";
+        }
+        if(!config_lookup_int(&option->cfg, "display_x", (int*) &option->m_display_settings->pos_x)) {
+            option->m_display_settings->pos_x = 200;
+        }
+        if(!config_lookup_int(&option->cfg, "display_y", (int*) &option->m_display_settings->pos_y)) {
+            option->m_display_settings->pos_y = 200;
+        }
+        
+
         option->m_display_settings->tab = GTK_NOTEBOOK(gtk_notebook_new());
         tab = option->m_display_settings->tab;
 
@@ -53,9 +81,8 @@ void activate(GtkApplication *app, gpointer user_data) {
         control_window_init(control_window, option, tab);
         display_window_init(display_window, option);
 
-        // gtk_widget_show_all(control_window);
         gtk_window_set_application(GTK_WINDOW(control_window), app);
-        // gtk_widget_show_all(display_window);
+        
         gtk_main();
     }
 }
@@ -65,6 +92,5 @@ void delete_event_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     stop_cb(option->m_decklink_options->m_stream);
     UNUSED(widget);
     UNUSED(event);
-    // g_object_unref(option->m_display_settings->webview_pause_script);
     gtk_main_quit();
 }

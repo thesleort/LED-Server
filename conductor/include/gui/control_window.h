@@ -8,6 +8,12 @@
 
 void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab);
 
+void projector_settings_add(GtkGrid *decklink_options, options *option);
+
+void video_stream_control_add(GtkGrid *projector_options, options *option);
+
+void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab);
+
 void tab_decklink_cb(GtkButton *button, GtkNotebook *tab);
 
 void tab_webview_cb(GtkButton *button, GtkNotebook *tab);

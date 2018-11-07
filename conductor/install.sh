@@ -18,6 +18,7 @@ sleep 1 && wmctrl -r "Progress Status" -b add,above &
     echo "[Desktop Entry]
 Version=0.2
 Name=Conductor 
+StartupWMClass=Conductor.out
 Comment=LED Screen controller
 Exec=$SCRIPTPATH/conductor.out
 Icon=$SCRIPTPATH/res/conductor_logo.svg
