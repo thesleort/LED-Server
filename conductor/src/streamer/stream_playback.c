@@ -9,7 +9,7 @@ void decklink_stream_gst(options *option) {
     GstBus *bus;
     GstStateChangeReturn ret;
 
-	// GstPad *preview_pad;
+    // GstPad *preview_pad;
 
     printf("Init stream\n");
 

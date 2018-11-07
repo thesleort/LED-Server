@@ -25,26 +25,21 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     webview_label = GTK_LABEL(gtk_label_new("- Projector -"));
     controls_label = GTK_LABEL(gtk_label_new("- Controls -"));
 
-
     decklink_stream_gst(option);
     setup_stream_ui(preview_grid, GTK_WINDOW(window), option->m_decklink_options->m_stream);
     gtk_box_pack_start(vbox, GTK_WIDGET(preview_grid), FALSE, FALSE, 0);
-
 
     projector_settings_add(decklink_options, option);
     gtk_box_pack_start(vbox, GTK_WIDGET(decklink_label), FALSE, FALSE, 5);
     gtk_box_pack_start(vbox, GTK_WIDGET(decklink_options), TRUE, TRUE, 10);
 
-
     video_stream_control_add(projector_options, option);
     gtk_box_pack_start(vbox, GTK_WIDGET(webview_label), FALSE, FALSE, 0);
     gtk_box_pack_start(vbox, GTK_WIDGET(projector_options), TRUE, TRUE, 0);
 
-
     controls_add(controls_box, option, tab);
     gtk_box_pack_start(vbox, GTK_WIDGET(controls_label), FALSE, FALSE, 0);
     gtk_box_pack_start(vbox, GTK_WIDGET(controls_box), TRUE, TRUE, 0);
-
 
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option);
 
@@ -106,7 +101,7 @@ void video_stream_control_add(GtkGrid *projector_options, options *option) {
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_pos_y), 2, 0, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_pos_apply), 3, 0, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->currently_showing), 0, 2, 1, 1);
-    gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing_var), 1, 2, 2, 1);    
+    gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing_var), 1, 2, 2, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_url), 0, 3, 2, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_url_search), 2, 3, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_url_save), 3, 3, 1, 1);
@@ -140,7 +135,7 @@ void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab) {
     option->m_controls->btn_open_display = GTK_BUTTON(gtk_button_new_with_label("Open player"));
     option->m_controls->btn_decklink = GTK_BUTTON(gtk_button_new_with_label(S_PROJECTOR_VIDEO_STREAM));
     option->m_controls->btn_tab_switch = GTK_BUTTON(gtk_button_new_with_label("Switch"));
-    option->m_controls->btn_webview  = GTK_BUTTON(gtk_button_new_with_label(S_PROJECTOR_WEB_VIEW));
+    option->m_controls->btn_webview = GTK_BUTTON(gtk_button_new_with_label(S_PROJECTOR_WEB_VIEW));
     btn_lock = GTK_BUTTON(gtk_button_new_with_label("LOCK"));
 
     gtk_box_pack_end(controls_box, GTK_WIDGET(btn_lock), TRUE, TRUE, 10); // Set all buttons to insensitive.
@@ -161,7 +156,6 @@ void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab) {
     g_signal_connect(G_OBJECT(option->m_controls->btn_open_display), "clicked", G_CALLBACK(open_display_window_cb), option);
     g_signal_connect(G_OBJECT(btn_lock), "clicked", G_CALLBACK(gui_lock_cb), option);
 }
-
 
 //
 // Callbacks
@@ -184,17 +178,17 @@ void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab) {
         gtk_notebook_next_page(tab);
     }
 }
-	
+
 void window_decoration_toggle_cb(GtkButton *button, display_settings *tab) {
     UNUSED(button);
-	GdkWindow *window;
-	window = gtk_widget_get_window(GTK_WIDGET(tab));
+    GdkWindow *window;
+    window = gtk_widget_get_window(GTK_WIDGET(tab));
 
-	if(gtk_window_get_decorated(GTK_WINDOW(window))) {
-		gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
-	} else {
-		gtk_window_set_decorated(GTK_WINDOW(window), TRUE);
-	}
+    if (gtk_window_get_decorated(GTK_WINDOW(window))) {
+        gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
+    } else {
+        gtk_window_set_decorated(GTK_WINDOW(window), TRUE);
+    }
 }
 
 void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
@@ -202,16 +196,16 @@ void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
     gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
     option->btn_other = button;
     option->m_input = sdi;
-	gint* intval;
-	GstElement *cap;
-	cap = gst_bin_get_by_name (GST_BIN (option->m_stream->pipeline), "source");
+    gint *intval;
+    GstElement *cap;
+    cap = gst_bin_get_by_name(GST_BIN(option->m_stream->pipeline), "source");
     gtk_label_set_text(option->label_current_input, "Current input: HDMI");
     stop_cb(option->m_stream);
-	g_object_set(option->m_stream->source, "connection",2, NULL);
-	// gst_caps_set_value(cap, "connection","2");
-	g_object_get(cap,"connection", &intval, NULL);
+    g_object_set(option->m_stream->source, "connection", 2, NULL);
+    // gst_caps_set_value(cap, "connection","2");
+    g_object_get(cap, "connection", &intval, NULL);
     play_cb(option->m_stream);
-	g_print("%i\n",GPOINTER_TO_INT(intval));
+    g_print("%i\n", GPOINTER_TO_INT(intval));
 }
 
 void decklink_input_sdi(GtkButton *button, decklink_options *option) {
@@ -219,17 +213,17 @@ void decklink_input_sdi(GtkButton *button, decklink_options *option) {
     gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
     option->btn_other = button;
     option->m_input = hdmi;
-	gint* intval;
-	GstElement *cap;
-	cap = gst_bin_get_by_name (GST_BIN (option->m_stream->pipeline), "source");
+    gint *intval;
+    GstElement *cap;
+    cap = gst_bin_get_by_name(GST_BIN(option->m_stream->pipeline), "source");
     gtk_label_set_text(option->label_current_input, "Current input: SDI");
-	// gst_caps_set_value(cap, "connection","1");
+    // gst_caps_set_value(cap, "connection","1");
     stop_cb(option->m_stream);
-	g_object_set(cap, "connection", 1, NULL);
-	g_object_get(cap, "connection", &intval, NULL);
+    g_object_set(cap, "connection", 1, NULL);
+    g_object_get(cap, "connection", &intval, NULL);
 
     play_cb(option->m_stream);
-	g_print("%i\n",GPOINTER_TO_INT(intval));
+    g_print("%i\n", GPOINTER_TO_INT(intval));
 }
 
 void open_display_window_cb(GtkButton *button, options *option) {
@@ -259,25 +253,25 @@ void set_display_window_pos_cb(GtkButton *button, options *option) {
     root = config_root_setting(&option->cfg);
 
     setting = config_lookup(&option->cfg, "display_x");
-    if(!setting) {
+    if (!setting) {
         setting = config_setting_add(root, "display_x", CONFIG_TYPE_INT);
     }
     config_setting_set_int(setting, pos_x);
-    
+
     setting = config_lookup(&option->cfg, "display_y");
-    if(!setting) {
+    if (!setting) {
         setting = config_setting_add(root, "display_y", CONFIG_TYPE_INT);
     }
     config_setting_set_int(setting, pos_y);
-	FILE *file = fopen(option->file_cfg, "w+");
+    FILE *file = fopen(option->file_cfg, "w+");
     config_write(&option->cfg, file);
-	fclose(file);
+    fclose(file);
     gtk_window_move(option->display_window, option->m_display_settings->pos_x, option->m_display_settings->pos_y);
     printf("moved window to %i,%i\n", option->m_display_settings->pos_x, option->m_display_settings->pos_y);
 }
 
 void gui_lock_cb(GtkButton *button, options *option) {
-	UNUSED(button);
+    UNUSED(button);
     if (option->m_controls->locked == TRUE) {
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->btn_pos_apply), TRUE);
         gtk_widget_set_sensitive(GTK_WIDGET(option->m_display_settings->entry_pos_x), TRUE);
