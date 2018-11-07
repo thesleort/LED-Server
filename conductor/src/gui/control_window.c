@@ -85,7 +85,9 @@ void projector_settings_add(GtkGrid *decklink_options, options *option) {
 
 void video_stream_control_add(GtkGrid *projector_options, options *option) {
     GtkLabel *projector_label_desc, *projector_label_showing_var;
+    GtkButton *btn_refresh_webview;
 
+    btn_refresh_webview = GTK_BUTTON(gtk_button_new_with_label("Refresh"));
     option->m_display_settings->btn_pos_apply = GTK_BUTTON(gtk_button_new_with_label("Apply"));
     option->m_display_settings->entry_pos_x = GTK_ENTRY(gtk_entry_new());
     option->m_display_settings->entry_pos_y = GTK_ENTRY(gtk_entry_new());
@@ -97,16 +99,23 @@ void video_stream_control_add(GtkGrid *projector_options, options *option) {
     option->m_display_settings->btn_url_save = GTK_BUTTON(gtk_button_new_with_label("Save URL"));
 
     gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_desc), 0, 0, 1, 2);
-    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_pos_x), 1, 0, 1, 1);
-    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_pos_y), 2, 0, 1, 1);
-    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_pos_apply), 3, 0, 1, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_pos_x), 2, 0, 1, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_pos_y), 3, 0, 1, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_pos_apply), 4, 0, 1, 1);
+
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->currently_showing), 0, 2, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing_var), 1, 2, 2, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_url), 0, 3, 2, 1);
+
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_url_search), 2, 3, 1, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(btn_refresh_webview), 4, 3, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_url_save), 3, 3, 1, 1);
 
     g_object_set(projector_label_desc, "margin", 12, NULL);
+    g_object_set(option->m_display_settings->btn_url_search, "margin", 6, NULL);
+    g_object_set(btn_refresh_webview, "margin", 6, NULL);
+    g_object_set(option->m_display_settings->btn_url_save, "margin", 6, NULL);
+    
     g_object_set(option->m_display_settings->entry_pos_x, "margin", 6, NULL);
     g_object_set(option->m_display_settings->entry_pos_y, "margin", 6, NULL);
     g_object_set(option->m_display_settings->currently_showing, "margin", 12, NULL);
@@ -121,12 +130,13 @@ void video_stream_control_add(GtkGrid *projector_options, options *option) {
     gtk_entry_set_input_purpose(option->m_display_settings->entry_pos_x, GTK_INPUT_PURPOSE_NUMBER);
     gtk_entry_set_input_purpose(option->m_display_settings->entry_pos_y, GTK_INPUT_PURPOSE_NUMBER);
     gtk_widget_set_size_request(GTK_WIDGET(option->m_display_settings->entry_url), 500, 30);
-    g_object_set(option->m_display_settings->entry_url, "margin", 6, NULL);
+    g_object_set(option->m_display_settings->entry_url, "margin", 12, NULL);
 
     g_signal_connect(G_OBJECT(option->m_display_settings->btn_pos_apply), "clicked", G_CALLBACK(set_display_window_pos_cb), option);
     g_signal_connect(option->m_display_settings->btn_url_search, "clicked", G_CALLBACK(url_entry_query), option);
     g_signal_connect(option->m_display_settings->btn_url_save, "clicked", G_CALLBACK(url_entry_save), option);
     g_signal_connect(option->m_display_settings->entry_url, "activate", G_CALLBACK(url_entry_query), option);
+    g_signal_connect(btn_refresh_webview, "clicked", G_CALLBACK(webview_refresh_cb), option);
 }
 
 void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab) {

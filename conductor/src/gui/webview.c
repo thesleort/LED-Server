@@ -51,6 +51,11 @@ gboolean webview_close_cb(WebKitWebView *web_view, GtkWidget *window) {
     return TRUE;
 }
 
+void webview_refresh_cb(GtkWidget *widget, options *option) {
+    webkit_web_view_reload(option->m_display_settings->webview);
+    printf("Page refreshed\n");
+}
+
 void url_entry_query(GtkWidget *widget, options *option) {
     UNUSED(widget);
     char buf[512];
