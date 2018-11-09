@@ -52,6 +52,7 @@ gboolean webview_close_cb(WebKitWebView *web_view, GtkWidget *window) {
 }
 
 void webview_refresh_cb(GtkWidget *widget, options *option) {
+    UNUSED(widget);
     webkit_web_view_reload(option->m_display_settings->webview);
     printf("Page refreshed\n");
 }
