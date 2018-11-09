@@ -61,6 +61,7 @@ typedef struct _display_settings {
 
 typedef struct _decklink_options {
     enum input m_input;
+    int device_num;
     GtkButton *btn_other;
     GtkLabel *label_current_input;
     stream_data *m_stream;

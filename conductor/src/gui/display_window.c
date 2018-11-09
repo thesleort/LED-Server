@@ -5,7 +5,7 @@
 
 void display_window_init(GtkWidget *window, options *option) {
     GtkNotebook *tab = option->m_display_settings->tab;
-    // stream_data *data = option->m_decklink_options->m_stream;
+
     option->display_window = GTK_WINDOW(window);
     option->is_display_open = TRUE;
 
@@ -27,7 +27,7 @@ void display_window_init(GtkWidget *window, options *option) {
     // Setup tab: Start
 
     webview_add(webview_grid, option);
-    // decklink_stream_gst(stream_grid, GTK_WINDOW(window), option);
+
     setup_stream_ui(stream_grid, GTK_WINDOW(window), option->m_decklink_options->m_stream);
 
     gtk_notebook_set_show_tabs(tab, FALSE);
@@ -49,22 +49,20 @@ void display_window_init(GtkWidget *window, options *option) {
 }
 
 void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {
-	UNUSED(event);
+    UNUSED(event);
     stop_cb(option->m_decklink_options->m_stream);
     option->is_display_open = FALSE;
     gtk_widget_destroy(widget);
-	webview_close_cb(option->m_display_settings->webview, widget);
+    webview_close_cb(option->m_display_settings->webview, widget);
     gtk_widget_set_sensitive(GTK_WIDGET(option->m_controls->btn_open_display), TRUE);
     printf("Closed: Display Window\n");
 }
 
 void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, options *option) {
-	// UNUSED(notebook);
-	UNUSED(page);
     printf("Calling: switch_tab_cb\n");
     WebKitSettings *web_settings = webkit_web_view_get_settings(option->m_display_settings->webview);
- 
-	webkit_settings_set_enable_javascript(web_settings, TRUE);
+
+    webkit_settings_set_enable_javascript(web_settings, TRUE);
     webkit_settings_set_enable_mediasource(web_settings, TRUE);
     gtk_label_set_text(option->m_display_settings->currently_showing, gtk_notebook_get_tab_label_text(notebook, page));
     switch (page_num) {

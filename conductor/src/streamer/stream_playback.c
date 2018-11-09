@@ -8,8 +8,8 @@ void decklink_stream_gst(options *option) {
     stream_data *data = option->m_decklink_options->m_stream;
     GstBus *bus;
     GstStateChangeReturn ret;
-
-	// GstPad *preview_pad;
+    config_setting_t *setting, *root;
+    // GstPad *preview_pad;
 
     printf("Init stream\n");
 
@@ -26,6 +26,19 @@ void decklink_stream_gst(options *option) {
     data->preview_sink = gst_element_factory_make("xvimagesink", "preview_sink");
 
     g_object_set(data->source, "connection", 1, NULL);
+    g_object_set(data->source, "mode", 0, NULL);
+
+    root = config_root_setting(&option->cfg);
+    if(!config_lookup_int(&option->cfg, "device_number", &option->m_decklink_options->device_num)) {
+        setting = config_setting_add(root, "device_number", CONFIG_TYPE_INT);
+        printf("ERROR\n");
+        config_setting_set_int(setting, 0);
+        option->m_decklink_options->device_num = 0;
+        FILE *file = fopen(option->file_cfg, "w+");
+        config_write(&option->cfg, file);
+        fclose(file);
+    } 
+    g_object_set(data->source, "device-number", option->m_decklink_options->device_num, NULL);
 
     g_object_set(data->sink, "sync", FALSE, NULL);
 
@@ -67,12 +80,12 @@ void decklink_stream_gst(options *option) {
     gst_element_link(data->tee, data->sink);
     gst_element_link(data->tee, data->preview_sink);
 
+    g_signal_connect (G_OBJECT (data->source), "video-tags-changed", (GCallback) tags_cb, &data);
+
     /* Register a function that GLib will call every second */
     g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
 
     printf("streaming\n");
-
-    // setup_stream_ui(grid, window, data);
 }
 
 void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
@@ -83,7 +96,6 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
     main_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
     printf("test1\n");
 
-    // gtk_widget_set_double_buffered(video_area, FALSE);
     gtk_widget_set_size_request(video_area, 896, 512);
 
     gtk_grid_attach(grid, GTK_WIDGET(main_box), 0, 0, 100, 1);
@@ -100,7 +112,6 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
         g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->sink);
     }
     g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data);
-    // gtk_widget_show_all(GTK_WIDGET(window));
 }
 
 /*
@@ -136,7 +147,6 @@ void realize_cb(GtkWidget *widget, GstElement *sink) {
     if (!gdk_window_ensure_native(window))
         g_error("Couldn't create native window needed for GstVideoOverlay!");
 
-    printf("err\n");
     /* Pass it to playbin, which implements VideoOverlay and will forward it to the video sink */
     window_handle = GDK_WINDOW_XID(window);
 
