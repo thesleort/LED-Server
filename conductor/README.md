@@ -36,9 +36,15 @@ make
 
 ### Decklink using GStreamer
 
-This is the current basic pipeline in use 
+This is the current basic pipeline in use.
+Device number may have to be changed depending on your setup. `connection=1` is for SDI input and `connection=2` is for HDMI input.
+
 ```bash
-gst-launch-1.0 -v decklinkvideosrc mode=0 connection=2 timecode-format=6 ! videoconvert ! xvimagesink
+gst-launch-1.0 decklinkvideosrc device-number=1 mode=0 connection=1 ! videoconvert ! xvimagesink sync=false
+```
+Test output to Decklink Monitor
+```bash
+gst-launch-1.0 videotestsrc ! decklinkvideosink
 ```
 
 ### Dependencies (Ubuntu)
