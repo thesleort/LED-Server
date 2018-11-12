@@ -8,7 +8,6 @@ void decklink_stream_gst(options *option) {
     stream_data *data = option->m_decklink_options->m_stream;
     GstBus *bus;
     GstStateChangeReturn ret;
-    config_setting_t *setting, *root;
     // GstPad *preview_pad;
 
     printf("Init stream\n");
@@ -20,27 +19,21 @@ void decklink_stream_gst(options *option) {
     printf("Gst element init\n");
 
     data->source = gst_element_factory_make("decklinkvideosrc", "source");
-    data->convert = gst_element_factory_make("videoconvert", "convert");
     data->tee = gst_element_factory_make("tee", "tee");
-    data->sink = gst_element_factory_make("xvimagesink", "sink");
+    data->display_queue = gst_element_factory_make("queue", "control_queue");
+    data->preview_queue = gst_element_factory_make("queue", "preview_queue");
+    data->display_convert = gst_element_factory_make("videoconvert", "control_convert");
+    data->preview_convert = gst_element_factory_make("videoconvert", "preview_convert");
+    data->display_sink = gst_element_factory_make("xvimagesink", "display_sink");
     data->preview_sink = gst_element_factory_make("xvimagesink", "preview_sink");
 
     g_object_set(data->source, "connection", 1, NULL);
     g_object_set(data->source, "mode", 0, NULL);
 
-    root = config_root_setting(&option->cfg);
-    if(!config_lookup_int(&option->cfg, "device_number", &option->m_decklink_options->device_num)) {
-        setting = config_setting_add(root, "device_number", CONFIG_TYPE_INT);
-        printf("ERROR\n");
-        config_setting_set_int(setting, 0);
-        option->m_decklink_options->device_num = 0;
-        FILE *file = fopen(option->file_cfg, "w+");
-        config_write(&option->cfg, file);
-        fclose(file);
-    } 
+
     g_object_set(data->source, "device-number", option->m_decklink_options->device_num, NULL);
 
-    g_object_set(data->sink, "sync", FALSE, NULL);
+    g_object_set(data->display_sink, "sync", FALSE, NULL);
 
     printf("Gst element init completed\n");
 
@@ -48,7 +41,7 @@ void decklink_stream_gst(options *option) {
 
     printf("Gst pipeline new done\n");
 
-    if (!data->pipeline || !data->source || !data->convert || !data->sink) {
+    if (!data->pipeline || !data->source || !data->display_convert || !data->display_sink) {
         g_printerr("Not all elements could be created.\n");
         return;
     }
@@ -70,15 +63,16 @@ void decklink_stream_gst(options *option) {
         gst_object_unref(data->pipeline);
         return;
     }
-    gst_bin_add_many(data->pipeline, data->source, data->convert, data->tee, data->sink, data->preview_sink, NULL);
+    gst_bin_add_many(data->pipeline, data->source, data->tee, data->display_queue, data->preview_queue, data->display_convert, data->preview_convert, data->display_sink, data->preview_sink, NULL);
+    gst_element_link(data->source, data->tee);
+    gst_element_link(data->tee, data->preview_queue);
+    gst_element_link(data->preview_queue, data->preview_convert);
+    gst_element_link(data->preview_convert, data->preview_sink);
 
-    gst_element_link(data->source, data->convert);
-    // gst_element_link(data->convert, data->preview_sink);
-    // gst_element_link(data->convert, data->sink);
-    // gst_element_link(data->source, data->convert);
-    gst_element_link(data->convert, data->tee);
-    gst_element_link(data->tee, data->sink);
-    gst_element_link(data->tee, data->preview_sink);
+
+    gst_element_link(data->tee, data->display_queue);
+    gst_element_link(data->display_queue, data->display_convert);
+    gst_element_link(data->display_convert, data->display_sink);
 
     g_signal_connect (G_OBJECT (data->source), "video-tags-changed", (GCallback) tags_cb, &data);
 
@@ -109,7 +103,7 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
         g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->preview_sink);
     } else {
         printf("Setting up: Display window\n");
-        g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->sink);
+        g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->display_sink);
     }
     g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data);
 }

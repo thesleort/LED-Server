@@ -33,6 +33,7 @@ void activate(GtkApplication *app, gpointer user_data) {
         GtkWidget *control_window;
         GtkNotebook *tab;
         stream_data stream;
+        config_setting_t *setting, *root;
 
         options *option = (options *)malloc(sizeof(options));
         decklink_options *d_option = (decklink_options *)malloc(sizeof(decklink_options));
@@ -68,6 +69,17 @@ void activate(GtkApplication *app, gpointer user_data) {
         }
         if (!config_lookup_int(&option->cfg, "display_y", (int *)&option->m_display_settings->pos_y)) {
             option->m_display_settings->pos_y = 200;
+        }
+
+        if (!config_lookup_int(&option->cfg, "device_number", &option->m_decklink_options->device_num)) {
+            root = config_root_setting(&option->cfg);
+            setting = config_setting_add(root, "device_number", CONFIG_TYPE_INT);
+            printf("ERROR\n");
+            config_setting_set_int(setting, 0);
+            option->m_decklink_options->device_num = 0;
+            FILE *file = fopen(option->file_cfg, "w+");
+            config_write(&option->cfg, file);
+            fclose(file);
         }
 
         option->m_display_settings->tab = GTK_NOTEBOOK(gtk_notebook_new());
