@@ -20,9 +20,9 @@ void decklink_stream_gst(options *option) {
 
     data->source = gst_element_factory_make("decklinkvideosrc", "source");
     data->tee = gst_element_factory_make("tee", "tee");
-    data->display_queue = gst_element_factory_make("queue", "control_queue");
+    data->display_queue = gst_element_factory_make("queue", "display_queue");
     data->preview_queue = gst_element_factory_make("queue", "preview_queue");
-    data->display_convert = gst_element_factory_make("videoconvert", "control_convert");
+    data->display_convert = gst_element_factory_make("videoconvert", "display_convert");
     data->preview_convert = gst_element_factory_make("videoconvert", "preview_convert");
     data->display_sink = gst_element_factory_make("xvimagesink", "display_sink");
     data->preview_sink = gst_element_factory_make("xvimagesink", "preview_sink");
@@ -34,6 +34,7 @@ void decklink_stream_gst(options *option) {
     g_object_set(data->source, "device-number", option->m_decklink_options->device_num, NULL);
 
     g_object_set(data->display_sink, "sync", FALSE, NULL);
+    g_object_set(data->preview_sink, "sync", FALSE, NULL);
 
     printf("Gst element init completed\n");
 
@@ -65,14 +66,17 @@ void decklink_stream_gst(options *option) {
     }
     gst_bin_add_many(data->pipeline, data->source, data->tee, data->display_queue, data->preview_queue, data->display_convert, data->preview_convert, data->display_sink, data->preview_sink, NULL);
     gst_element_link(data->source, data->tee);
-    gst_element_link(data->tee, data->preview_queue);
-    gst_element_link(data->preview_queue, data->preview_convert);
-    gst_element_link(data->preview_convert, data->preview_sink);
 
 
     gst_element_link(data->tee, data->display_queue);
     gst_element_link(data->display_queue, data->display_convert);
     gst_element_link(data->display_convert, data->display_sink);
+
+    gst_element_link(data->tee, data->preview_queue);
+    gst_element_link(data->preview_queue, data->preview_convert);
+    gst_element_link(data->preview_convert, data->preview_sink);
+
+
 
     g_signal_connect (G_OBJECT (data->source), "video-tags-changed", (GCallback) tags_cb, &data);
 
