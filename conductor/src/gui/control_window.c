@@ -84,7 +84,7 @@ void projector_settings_add(GtkGrid *decklink_options, options *option) {
 }
 
 void video_stream_control_add(GtkGrid *projector_options, options *option) {
-    GtkLabel *projector_label_desc, *projector_label_showing_var;
+    GtkLabel *projector_label_desc, *projector_label_showing;
     GtkButton *btn_refresh_webview;
 
     btn_refresh_webview = GTK_BUTTON(gtk_button_new_with_label("Refresh"));
@@ -92,8 +92,8 @@ void video_stream_control_add(GtkGrid *projector_options, options *option) {
     option->m_display_settings->entry_pos_x = GTK_ENTRY(gtk_entry_new());
     option->m_display_settings->entry_pos_y = GTK_ENTRY(gtk_entry_new());
     projector_label_desc = GTK_LABEL(gtk_label_new("Position:"));
-    option->m_display_settings->currently_showing = GTK_LABEL(gtk_label_new("Currently showing:"));
-    projector_label_showing_var = GTK_LABEL(gtk_label_new(S_PROJECTOR_VIDEO_STREAM));
+    option->m_display_settings->currently_showing = GTK_LABEL(gtk_label_new(S_PROJECTOR_VIDEO_STREAM));
+    projector_label_showing = GTK_LABEL(gtk_label_new("Currently showing:"));
     option->m_display_settings->entry_url = GTK_ENTRY(gtk_entry_new());
     option->m_display_settings->btn_url_search = GTK_BUTTON(gtk_button_new_with_label("Search"));
     option->m_display_settings->btn_url_save = GTK_BUTTON(gtk_button_new_with_label("Save URL"));
@@ -103,8 +103,8 @@ void video_stream_control_add(GtkGrid *projector_options, options *option) {
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_pos_y), 3, 0, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_pos_apply), 4, 0, 1, 1);
 
-    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->currently_showing), 0, 2, 1, 1);
-    gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing_var), 1, 2, 2, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(projector_label_showing), 0, 2, 2, 1);
+    gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->currently_showing), 1, 2, 1, 1);
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->entry_url), 0, 3, 2, 1);
 
     gtk_grid_attach(projector_options, GTK_WIDGET(option->m_display_settings->btn_url_search), 2, 3, 1, 1);
@@ -118,8 +118,8 @@ void video_stream_control_add(GtkGrid *projector_options, options *option) {
     
     g_object_set(option->m_display_settings->entry_pos_x, "margin", 6, NULL);
     g_object_set(option->m_display_settings->entry_pos_y, "margin", 6, NULL);
-    g_object_set(option->m_display_settings->currently_showing, "margin", 12, NULL);
-    gtk_label_set_xalign(option->m_display_settings->currently_showing, 0.0);
+    g_object_set(projector_label_showing, "margin", 12, NULL);
+    gtk_label_set_xalign(projector_label_showing, 0.0);
     gtk_label_set_xalign(projector_label_desc, 0.0);
     gtk_entry_set_width_chars(option->m_display_settings->entry_pos_x, 5);
     gtk_entry_set_width_chars(option->m_display_settings->entry_pos_y, 5);

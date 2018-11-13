@@ -190,5 +190,5 @@ void pause_sink_cb(GstElement *sink) {
 
 void play_sink_cb(GstElement *sink) {
     gst_element_set_state(GST_ELEMENT(sink), GST_STATE_PLAYING);
-    printf("Sink status: Paused\n");
+    printf("Sink status: Playing\n");
 }

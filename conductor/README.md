@@ -28,6 +28,11 @@ make
 ./conductor.out
 ```
 
+### Configuration
+
+Settings will be saved in `$HOME/.config/conductor/conductor.cfg`. All settings, but one, can currently be set using the GUI. The input device / decklink recorder, has to be set in the config, as there
+is currently no way of setting that in the GUI. By default the input device is set to 0.
+
 ### Decklink using GStreamer
 
 This is the current basic pipeline in use.
