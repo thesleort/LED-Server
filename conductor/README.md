@@ -11,16 +11,10 @@ Environment for LED screen control and low latency playback of SDI/BNC input usi
 Double click on `install.sh` or run in terminal
 
 ```bash
-bash install.sh
+./install.sh
 ```
 
 ### Terminal
-
-Create the following directories.
-
-```bash
-mkdir build
-```
 
 ### Build
 
@@ -55,3 +49,9 @@ These are the required dependencies to build and run the GUI application.
 sudo apt install build-essential libgstreamer1.0-dev libgtk-3-dev libwebkit2gtk-4.0-dev libgstreamer-plugins-bad1.0-dev libconfig-dev
 ```
 Blackmagic Decklink Drivers for Linux: [Download](https://www.blackmagicdesign.com/support/family/capture-and-playback)
+
+## Remove
+
+```bash
+./remove.sh
+```
