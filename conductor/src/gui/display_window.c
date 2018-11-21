@@ -61,9 +61,6 @@ void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {
 void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, options *option) {
     printf("Calling: switch_tab_cb\n");
 
-    webkit_settings_set_enable_javascript(option->m_display_settings->web_settings, TRUE);
-    webkit_settings_set_enable_mediasource(option->m_display_settings->web_settings, TRUE);
-    webkit_settings_set_hardware_acceleration_policy(option->m_display_settings->web_settings, WEBKIT_HARDWARE_ACCELERATION_POLICY_NEVER);
     gtk_label_set_text(option->m_display_settings->currently_showing, gtk_notebook_get_tab_label_text(notebook, page));
     switch (page_num) {
     case 0:

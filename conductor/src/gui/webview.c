@@ -29,6 +29,29 @@ void webview_add(GtkGrid *grid, options *option) {
 
     WebKitWebInspector *inspector = webkit_web_view_get_inspector(WEBKIT_WEB_VIEW(option->m_display_settings->webview));
     webkit_web_inspector_show(WEBKIT_WEB_INSPECTOR(inspector));
+
+    webkit_settings_set_enable_javascript(option->m_display_settings->web_settings, TRUE);
+    webkit_settings_set_enable_mediasource(option->m_display_settings->web_settings, TRUE);
+
+    config_setting_t *root, *setting;
+    const char *decoder[8];
+
+    root = config_root_setting(&option->cfg);
+
+    setting = config_lookup(&option->cfg, "decoder");
+    if (!setting) {
+        setting = config_setting_add(root, "decoder", CONFIG_TYPE_STRING);
+        config_setting_set_string(setting, "software");
+        FILE *file = fopen(option->file_cfg, "w+");
+        config_write(&option->cfg, file);
+        fclose(file);
+    }
+    config_lookup_string(&option->cfg, "decoder", decoder);
+    if(strcmp(*decoder, "software")) {
+        webkit_settings_set_hardware_acceleration_policy(option->m_display_settings->web_settings, WEBKIT_HARDWARE_ACCELERATION_POLICY_NEVER);
+    } else if(strcmp(*decoder, "hardware")) {
+        webkit_settings_set_hardware_acceleration_policy(option->m_display_settings->web_settings, WEBKIT_HARDWARE_ACCELERATION_POLICY_ALWAYS);
+    }
 }
 
 void load_scripts(options *option) {
