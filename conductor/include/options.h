@@ -78,6 +78,7 @@ typedef struct _options {
     controls *m_controls;
     display_settings *m_display_settings;
     GtkWindow *display_window;
+    GtkWindow *control_window;
     gboolean is_display_open;
     config_t cfg;
 	char file_cfg[128];

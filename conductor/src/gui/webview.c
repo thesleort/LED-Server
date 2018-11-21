@@ -81,6 +81,20 @@ void webview_refresh_cb(GtkWidget *widget, options *option) {
     printf("Page refreshed\n");
 }
 
+gboolean webview_keypress_cb(GtkWidget *widget, GdkEventKey *event, options *option) {
+    printf("Key: ");
+    switch(event->keyval) {
+        case GDK_KEY_F5:
+            printf("F5 pressed\n");
+            webview_refresh_cb(widget, option);
+            return TRUE;
+            break;
+        default:
+            return FALSE;
+    }
+    printf("\n");
+}
+
 void url_entry_query(GtkWidget *widget, options *option) {
     UNUSED(widget);
     char buf[512];

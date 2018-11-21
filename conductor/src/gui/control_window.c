@@ -6,6 +6,8 @@
 void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_window_set_title(GTK_WINDOW(window), MAIN_WINDOW);
 
+    option->control_window = GTK_WINDOW(window);
+
     option->display_window = GTK_WINDOW(gtk_widget_get_window(GTK_WIDGET(tab)));
     option->m_controls->locked = FALSE;
 
@@ -42,6 +44,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_box_pack_start(vbox, GTK_WIDGET(controls_box), TRUE, TRUE, 0);
 
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option);
+    g_signal_connect(G_OBJECT(option->control_window),"key_press_event", G_CALLBACK(webview_keypress_cb), option);
 
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
 
@@ -249,6 +252,8 @@ void open_display_window_cb(GtkButton *button, options *option) {
 
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
     display_window_init(GTK_WIDGET(option->display_window), option);
+
+    g_signal_connect(G_OBJECT(option->control_window),"key_press_event", G_CALLBACK(webview_keypress_cb), option);
 }
 
 void set_display_window_pos_cb(GtkButton *button, options *option) {
