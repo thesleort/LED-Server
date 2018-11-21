@@ -53,6 +53,7 @@ typedef struct _display_settings {
 
     gchar *website_url;
 	WebKitWebView *webview;
+    WebKitSettings *web_settings;
 	gchar *webview_pause_script;
 	int pause_size;
 	gchar *webview_play_script;

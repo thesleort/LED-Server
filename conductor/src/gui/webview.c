@@ -12,6 +12,7 @@ void webview_add(GtkGrid *grid, options *option) {
     printf("Webview setup\n");
 
     option->m_display_settings->webview = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    option->m_display_settings->web_settings = webkit_web_view_get_settings(option->m_display_settings->webview);
 
     config_lookup_string(&option->cfg, "url", (const char **)&option->m_display_settings->website_url);
     printf("WEBSITE: %s\n", option->m_display_settings->website_url);
