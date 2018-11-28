@@ -33,7 +33,6 @@ void activate(GtkApplication *app, gpointer user_data) {
     } else {
         GtkWidget *display_window;
         GtkWidget *control_window;
-        GtkNotebook *tab;
         stream_data stream;
         config_setting_t *setting, *root;
 
@@ -85,13 +84,12 @@ void activate(GtkApplication *app, gpointer user_data) {
         }
 
         option->m_display_settings->tab = GTK_NOTEBOOK(gtk_notebook_new());
-        tab = option->m_display_settings->tab;
 
         control_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         display_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
         option->is_display_open = TRUE;
-        control_window_init(control_window, option, tab);
+        control_window_init(control_window, option);
         display_window_init(display_window, option);
 
         gtk_window_set_application(GTK_WINDOW(control_window), app);
