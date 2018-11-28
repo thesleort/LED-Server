@@ -13,6 +13,8 @@ void display_close_cb (GtkWidget *widget, GdkEvent *event, options *option);
 
 void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, options *option);
 
+int load_current_page_setting(options *option);
+
 void finish();
 
 

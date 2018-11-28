@@ -3,12 +3,12 @@
 #include "gui/webview.h"
 #include "auxiliary.h"
 
-void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
+void control_window_init(GtkWidget *window, options *option) {
     gtk_window_set_title(GTK_WINDOW(window), MAIN_WINDOW);
 
     option->control_window = GTK_WINDOW(window);
 
-    option->display_window = GTK_WINDOW(gtk_widget_get_window(GTK_WIDGET(tab)));
+    option->display_window = GTK_WINDOW(gtk_widget_get_window(GTK_WIDGET(option->m_display_settings->tab)));
     option->m_controls->locked = FALSE;
 
     GtkBox *vbox, *controls_box;
@@ -40,7 +40,7 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_box_pack_start(vbox, GTK_WIDGET(webview_label), FALSE, FALSE, 0);
     gtk_box_pack_start(vbox, GTK_WIDGET(projector_options), TRUE, TRUE, 0);
 
-    controls_add(controls_box, option, tab);
+    controls_add(controls_box, option);
     gtk_box_pack_start(vbox, GTK_WIDGET(controls_label), FALSE, FALSE, 0);
     gtk_box_pack_start(vbox, GTK_WIDGET(controls_box), TRUE, TRUE, 0);
 
@@ -53,6 +53,8 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 550);
 
     gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(vbox));
+
+    gtk_notebook_set_current_page(option->m_display_settings->tab, load_current_page_setting(option));
 
     gtk_widget_show_all(window);
 }
@@ -146,7 +148,7 @@ void video_stream_control_add(GtkGrid *projector_options, options *option) {
     g_signal_connect(btn_refresh_webview, "clicked", G_CALLBACK(webview_refresh_cb), option);
 }
 
-void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab) {
+void controls_add(GtkBox *controls_box, options *option) {
     GtkButton *btn_lock;
 
     option->m_controls->btn_open_display = GTK_BUTTON(gtk_button_new_with_label("Open player"));
@@ -167,9 +169,9 @@ void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab) {
 
     g_object_set(controls_box, "margin-bottom", 12, NULL);
 
-    g_signal_connect(G_OBJECT(option->m_controls->btn_decklink), "clicked", G_CALLBACK(tab_decklink_cb), tab);
-    g_signal_connect(G_OBJECT(option->m_controls->btn_webview), "clicked", G_CALLBACK(tab_webview_cb), tab);
-    g_signal_connect(G_OBJECT(option->m_controls->btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), tab);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_decklink), "clicked", G_CALLBACK(tab_decklink_cb), option);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_webview), "clicked", G_CALLBACK(tab_webview_cb), option);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), option);
     g_signal_connect(G_OBJECT(option->m_controls->btn_open_display), "clicked", G_CALLBACK(open_display_window_cb), option);
     g_signal_connect(G_OBJECT(btn_lock), "clicked", G_CALLBACK(gui_lock_cb), option);
 }
@@ -189,22 +191,45 @@ void about_info_add(GtkGrid *grid) {
 //
 // Callbacks
 //
-void tab_decklink_cb(GtkButton *button, GtkNotebook *tab) {
+void tab_decklink_cb(GtkButton *button, options *option) {
     UNUSED(button);
-    gtk_notebook_set_current_page(tab, 0);
+    gtk_notebook_set_current_page(option->m_display_settings->tab, 0);
+    save_current_tab(0, option);
 }
 
-void tab_webview_cb(GtkButton *button, GtkNotebook *tab) {
+void tab_webview_cb(GtkButton *button, options *option) {
     UNUSED(button);
-    gtk_notebook_set_current_page(tab, 1);
+    gtk_notebook_set_current_page(option->m_display_settings->tab, 1);
+    save_current_tab(1, option);
 }
 
-void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab) {
+void tab_nextpage_cb(GtkButton *button, options *option) {
     UNUSED(button);
-    if (gtk_notebook_get_current_page(tab) == gtk_notebook_get_n_pages(tab) - 1) {
-        gtk_notebook_set_current_page(tab, 0);
+    if (gtk_notebook_get_current_page(option->m_display_settings->tab) == gtk_notebook_get_n_pages(option->m_display_settings->tab) - 1) {
+        gtk_notebook_set_current_page(option->m_display_settings->tab, 0);
+        save_current_tab(0, option);
     } else {
-        gtk_notebook_next_page(tab);
+        gtk_notebook_next_page(option->m_display_settings->tab);
+        save_current_tab(gtk_notebook_get_current_page(option->m_display_settings->tab), option);
+    }
+}
+
+void save_current_tab(int tab, options *option) {
+    config_setting_t *root, *setting;
+    root = config_root_setting(&option->cfg);
+
+    setting = config_lookup(&option->cfg, "tab");
+    if (!setting) {
+        setting = config_setting_add(root, "tab", CONFIG_TYPE_INT);
+        config_setting_set_int(setting, tab);
+        FILE *file = fopen(option->file_cfg, "w+");
+        config_write(&option->cfg, file);
+        fclose(file);
+    } else {
+        config_setting_set_int(setting, tab);
+        FILE *file = fopen(option->file_cfg, "w+");
+        config_write(&option->cfg, file);
+        fclose(file);
     }
 }
 
@@ -262,9 +287,9 @@ void open_display_window_cb(GtkButton *button, options *option) {
     option->display_window = display_window;
     option->m_display_settings->tab = GTK_NOTEBOOK(gtk_notebook_new());
 
-    g_signal_connect(G_OBJECT(option->m_controls->btn_decklink), "clicked", G_CALLBACK(tab_decklink_cb), option->m_display_settings->tab);
-    g_signal_connect(G_OBJECT(option->m_controls->btn_webview), "clicked", G_CALLBACK(tab_webview_cb), option->m_display_settings->tab);
-    g_signal_connect(G_OBJECT(option->m_controls->btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), option->m_display_settings->tab);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_decklink), "clicked", G_CALLBACK(tab_decklink_cb), option);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_webview), "clicked", G_CALLBACK(tab_webview_cb), option);
+    g_signal_connect(G_OBJECT(option->m_controls->btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), option);
 
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
     display_window_init(GTK_WIDGET(option->display_window), option);

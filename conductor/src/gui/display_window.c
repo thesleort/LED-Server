@@ -3,6 +3,9 @@
 #include "gui/webview.h"
 #include "auxiliary.h"
 
+#include <libconfig.h>
+#include <glib.h>
+typedef void (*FPtr)(void);
 void display_window_init(GtkWidget *window, options *option) {
     GtkNotebook *tab = option->m_display_settings->tab;
 
@@ -55,6 +58,9 @@ void display_close_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     gtk_widget_destroy(widget);
     webview_close_cb(option->m_display_settings->webview, widget);
     gtk_widget_set_sensitive(GTK_WIDGET(option->m_controls->btn_open_display), TRUE);
+
+    // TODO: Remove compiler warning.
+    g_signal_handlers_disconnect_by_func(option->m_controls->btn_tab_switch, tab_nextpage_cb, option);
     printf("Closed: Display Window\n");
 }
 
@@ -78,4 +84,22 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
 
 void finish() {
     printf("Script done\n");
+}
+
+int load_current_page_setting(options *option) {
+    config_setting_t *root, *setting;
+    int tab;
+    root = config_root_setting(&option->cfg);
+
+    setting = config_lookup(&option->cfg, "tab");
+    if (!setting) {
+        setting = config_setting_add(root, "tab", CONFIG_TYPE_INT);
+        config_setting_set_int(setting, 0);
+        FILE *file = fopen(option->file_cfg, "w+");
+        config_write(&option->cfg, file);
+        fclose(file);
+    }
+    config_lookup_int(&option->cfg, "tab", &tab);
+
+    return tab;
 }
