@@ -48,6 +48,8 @@ void display_window_init(GtkWidget *window, options *option) {
 
     gtk_widget_show_all(window);
 
+    gtk_notebook_set_current_page(tab, load_current_page_setting(option));
+
     gtk_window_move(GTK_WINDOW(window), option->m_display_settings->pos_x, option->m_display_settings->pos_y);
 }
 
