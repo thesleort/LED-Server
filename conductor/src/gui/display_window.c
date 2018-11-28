@@ -3,6 +3,8 @@
 #include "gui/webview.h"
 #include "auxiliary.h"
 
+#include <libconfig.h>
+
 void display_window_init(GtkWidget *window, options *option) {
     GtkNotebook *tab = option->m_display_settings->tab;
 
@@ -45,6 +47,8 @@ void display_window_init(GtkWidget *window, options *option) {
 
     gtk_widget_show_all(window);
 
+    gtk_notebook_set_current_page(tab, load_current_page_setting(option));
+
     gtk_window_move(GTK_WINDOW(window), option->m_display_settings->pos_x, option->m_display_settings->pos_y);
 }
 
@@ -78,4 +82,22 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
 
 void finish() {
     printf("Script done\n");
+}
+
+int load_current_page_setting(options *option) {
+    config_setting_t *root, *setting;
+    int tab;
+    root = config_root_setting(&option->cfg);
+
+    setting = config_lookup(&option->cfg, "tab");
+    if (!setting) {
+        setting = config_setting_add(root, "tab", CONFIG_TYPE_INT);
+        config_setting_set_int(setting, 0);
+        FILE *file = fopen(option->file_cfg, "w+");
+        config_write(&option->cfg, file);
+        fclose(file);
+    }
+    config_lookup_int(&option->cfg, "tab", &tab);
+
+    return tab;
 }

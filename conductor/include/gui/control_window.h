@@ -16,11 +16,13 @@ void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab);
 
 void about_info_add(GtkGrid *grid);
 
-void tab_decklink_cb(GtkButton *button, GtkNotebook *tab);
+void tab_decklink_cb(GtkButton *button, options *option);
 
-void tab_webview_cb(GtkButton *button, GtkNotebook *tab);
+void tab_webview_cb(GtkButton *button, options *option);
 
-void tab_nextpage_cb(GtkButton *button, GtkNotebook *tab);
+void tab_nextpage_cb(GtkButton *button, options *option);
+
+void save_current_tab(int tab, options *option);
 
 void decklink_input_hdmi(GtkButton *button, decklink_options *option);
 
