@@ -12,13 +12,14 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     option->m_controls->locked = FALSE;
 
     GtkBox *vbox, *controls_box;
-    GtkGrid *decklink_options, *projector_options, *preview_grid;
+    GtkGrid *decklink_options, *projector_options, *preview_grid, *about_grid;
 
     GtkLabel *decklink_label, *webview_label, *controls_label;
 
     decklink_options = GTK_GRID(gtk_grid_new());
     projector_options = GTK_GRID(gtk_grid_new());
     preview_grid = GTK_GRID(gtk_grid_new());
+    about_grid = GTK_GRID(gtk_grid_new());
 
     vbox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
     controls_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30));
@@ -42,6 +43,9 @@ void control_window_init(GtkWidget *window, options *option, GtkNotebook *tab) {
     controls_add(controls_box, option, tab);
     gtk_box_pack_start(vbox, GTK_WIDGET(controls_label), FALSE, FALSE, 0);
     gtk_box_pack_start(vbox, GTK_WIDGET(controls_box), TRUE, TRUE, 0);
+
+    about_info_add(about_grid);
+    gtk_box_pack_start(vbox, GTK_WIDGET(about_grid), FALSE, FALSE, 0);
 
     g_signal_connect(G_OBJECT(window), "delete-event", G_CALLBACK(delete_event_cb), option);
     g_signal_connect(G_OBJECT(option->control_window),"key_press_event", G_CALLBACK(webview_keypress_cb), option);
@@ -168,6 +172,18 @@ void controls_add(GtkBox *controls_box, options *option, GtkNotebook *tab) {
     g_signal_connect(G_OBJECT(option->m_controls->btn_tab_switch), "clicked", G_CALLBACK(tab_nextpage_cb), tab);
     g_signal_connect(G_OBJECT(option->m_controls->btn_open_display), "clicked", G_CALLBACK(open_display_window_cb), option);
     g_signal_connect(G_OBJECT(btn_lock), "clicked", G_CALLBACK(gui_lock_cb), option);
+}
+
+void about_info_add(GtkGrid *grid) {
+    GtkLabel *label_version;
+
+    char version_string[64];
+
+    sprintf(version_string, "v%i.%i.%i", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+
+    label_version = GTK_LABEL(gtk_label_new(version_string));
+
+    gtk_grid_attach(grid, GTK_WIDGET(label_version), 0, 0, 1, 1);
 }
 
 //

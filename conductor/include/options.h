@@ -6,6 +6,10 @@
 #include <gst/gst.h>
 #include <libconfig.h>
 
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 4
+#define VERSION_PATCH 1
+
 #define MAIN_WINDOW "LED Server - Control window"
 #define DISPLAY_WINDOW "LED Server - Display window"
 #define S_PROJECTOR_VIDEO_STREAM "Video stream"
