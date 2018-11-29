@@ -1,6 +1,6 @@
 #include "rest/api.h"
 #include "options.h"
-#include "gui/control_window.h"
+#include "gui/api.h"
 
 #include <ulfius.h>
 #include <gtk/gtk.h>

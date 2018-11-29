@@ -34,11 +34,5 @@ void set_display_window_pos_cb(GtkButton *button, options *option);
 
 void gui_lock_cb(GtkButton *button, options *option);
 
-void tab_decklink_idle_cb(options *option);
-
-void tab_webview_idle_cb(options *option);
-
-void tab_nextpage_idle_cb(options *option);
-
 
 #endif
