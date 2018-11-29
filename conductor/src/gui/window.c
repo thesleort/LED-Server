@@ -4,6 +4,7 @@
 #include "gui/window.h"
 #include "streamer/stream_playback.h"
 #include "options.h"
+#include "rest/webservice.h"
 
 int main(int argc, char **argv) {
     GtkApplication *app;
@@ -50,6 +51,13 @@ void activate(GtkApplication *app, gpointer user_data) {
 
         printf("Config: %s\n", option->file_cfg);
         FILE *file = fopen(option->file_cfg, "r+");
+
+        // pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+
+        // pthread_mutex_init(option->lock, PTHREAD_MUTEX_NORMAL)
+        // option->lock = &lock;
+
+        webservice_init(option);
 
         // In case config does not exist
         if (file == NULL) {

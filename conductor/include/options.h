@@ -5,6 +5,7 @@
 #include <webkit2/webkit2.h>
 #include <gst/gst.h>
 #include <libconfig.h>
+#include <pthread.h>
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 5
@@ -84,6 +85,9 @@ typedef struct _options {
     GtkWindow *display_window;
     GtkWindow *control_window;
     gboolean is_display_open;
+    pthread_t thread_webservice;
+    pthread_cond_t gtk_cond;
+    pthread_mutex_t lock;
     config_t cfg;
 	char file_cfg[128];
 } options;

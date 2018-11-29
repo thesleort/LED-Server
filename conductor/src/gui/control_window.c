@@ -179,7 +179,7 @@ void controls_add(GtkBox *controls_box, options *option) {
 void about_info_add(GtkGrid *grid) {
     GtkLabel *label_version;
 
-    char version_string[64];
+    char version_string[16];
 
     sprintf(version_string, "v%i.%i.%i", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
 
@@ -212,6 +212,18 @@ void tab_nextpage_cb(GtkButton *button, options *option) {
         gtk_notebook_next_page(option->m_display_settings->tab);
         save_current_tab(gtk_notebook_get_current_page(option->m_display_settings->tab), option);
     }
+}
+
+void tab_decklink_idle_cb(options *option) {
+    tab_decklink_cb(NULL, option);
+}
+
+void tab_webview_idle_cb(options *option) {
+    tab_webview_cb(NULL, option);
+}
+
+void tab_nextpage_idle_cb(options *option) {
+    tab_nextpage_cb(NULL, option);
 }
 
 void save_current_tab(int tab, options *option) {
