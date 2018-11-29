@@ -12,14 +12,6 @@ int callback_hello_world(const struct _u_request *request, struct _u_response *r
 }
 
 int switch_input_cb(const struct _u_request *request, struct _u_response *response, options *option) {
-    // char *url_params = print_map(request->map_url), *headers = print_map(request->map_header), *cookies = print_map(request->map_cookie),
-    //      *post_params = print_map(request->map_post_body);
-
-    // char *response_body = sprintf("Hello World!\n\n  method is %s\n  url is %s\n\n  parameters from the url are \n%s\n\n  cookies are \n%s\n\n  headers are \n%s\n\n  post parameters are \n%s\n\n  user data is %s\n\n",
-    //
-    // char *user_data;
-
-    char *url_params = print_map(request->map_url);
 
     printf("Lengths: %i, POS: %i\n", request->map_url->nb_values, option->m_display_settings->pos_x);
     for (unsigned key = 0; key < request->map_url->nb_values; ++key) {
@@ -28,8 +20,6 @@ int switch_input_cb(const struct _u_request *request, struct _u_response *respon
 
             if (strcmp(request->map_url->values[key], "next") == 0) {
                 printf("NEXT\n");
-                // tab_nextpage_cb(NULL, option);
-                // pthread_cond_wait(&option->gtk_cond, &option->lock);
                 g_idle_add((GSourceFunc) tab_nextpage_idle_cb, option);
                 ulfius_set_string_body_response(response, 200, "showing: next\n");
                 printf("NEXT\n");
@@ -43,11 +33,6 @@ int switch_input_cb(const struct _u_request *request, struct _u_response *respon
             }
         }
     }
-
-    // char *response_body = sprintf("Page switched\n", user_data);
-
-    free(url_params);
-    // free(response_body);
     return U_CALLBACK_CONTINUE;
 }
 

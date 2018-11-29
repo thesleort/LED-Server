@@ -83,7 +83,6 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
         webkit_web_view_run_javascript(option->m_display_settings->webview, option->m_display_settings->webview_play_script, NULL, finish, NULL);
         break;
     }
-    pthread_cond_signal(&option->gtk_cond);
 }
 
 void finish() {

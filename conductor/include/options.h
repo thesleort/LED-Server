@@ -86,8 +86,6 @@ typedef struct _options {
     GtkWindow *control_window;
     gboolean is_display_open;
     pthread_t thread_webservice;
-    pthread_cond_t gtk_cond;
-    pthread_mutex_t lock;
     config_t cfg;
 	char file_cfg[128];
 } options;
