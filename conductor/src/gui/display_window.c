@@ -5,7 +5,7 @@
 
 #include <libconfig.h>
 #include <glib.h>
-typedef void (*FPtr)(void);
+
 void display_window_init(GtkWidget *window, options *option) {
     GtkNotebook *tab = option->m_display_settings->tab;
 
