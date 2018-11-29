@@ -11,25 +11,32 @@ int callback_hello_world(const struct _u_request *request, struct _u_response *r
     return U_CALLBACK_CONTINUE;
 }
 
-int switch_input_cb(const struct _u_request *request, struct _u_response *response, options *option) {
+int switch_display_cb(const struct _u_request *request, struct _u_response *response, options *option) {
 
     printf("Lengths: %i, POS: %i\n", request->map_url->nb_values, option->m_display_settings->pos_x);
     for (unsigned key = 0; key < request->map_url->nb_values; ++key) {
         if (strcmp(request->map_url->keys[key], "show") == 0) {
-            printf("SHOW\n");
 
             if (strcmp(request->map_url->values[key], "next") == 0) {
-                printf("NEXT\n");
-                g_idle_add((GSourceFunc) tab_nextpage_idle_cb, option);
+                g_idle_add((GSourceFunc) idle_tab_nextpage_cb, option);
                 ulfius_set_string_body_response(response, 200, "showing: next\n");
-                printf("NEXT\n");
+
             } else if (strcmp(request->map_url->values[key], "web") == 0) {
-                printf("WEB\n");
-                g_idle_add((GSourceFunc) tab_webview_idle_cb, option);
+                g_idle_add((GSourceFunc) idle_tab_webview_cb, option);
                 ulfius_set_string_body_response(response, 200, "showing: web\n");
+
             } else if (strcmp(request->map_url->values[key], "video") == 0) {
-                
-                g_idle_add((GSourceFunc) tab_decklink_idle_cb, option);
+                g_idle_add((GSourceFunc) idle_tab_decklink_cb, option);
+                ulfius_set_string_body_response(response, 200, "showing: video\n");
+            }
+        } else if (strcmp(request->map_url->keys[key], "input") == 0) {
+
+            if (strcmp(request->map_url->values[key], "hdmi") == 0) {
+                g_idle_add((GSourceFunc) idle_set_input_source_hdmi, option);
+                ulfius_set_string_body_response(response, 200, "input: hdmi\n");
+            } else if(strcmp(request->map_url->values[key], "sdi") == 0) {
+                g_idle_add((GSourceFunc) idle_set_input_source_sdi, option);
+                ulfius_set_string_body_response(response, 200, "input: sdi\n");
             }
         }
     }

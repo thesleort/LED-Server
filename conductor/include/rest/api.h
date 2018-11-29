@@ -9,6 +9,8 @@
 
 int callback_hello_world(const struct _u_request *request, struct _u_response *response, void * user_data);
 
+int switch_display_cb(const struct _u_request *request, struct _u_response *response, options *option);
+
 int switch_input_cb(const struct _u_request *request, struct _u_response *response, options *option);
 
 char * print_map(const struct _u_map * map);

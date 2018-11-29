@@ -247,7 +247,7 @@ void window_decoration_toggle_cb(GtkButton *button, display_settings *tab) {
 
 void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_sdi), TRUE);
     option->btn_other = button;
     option->m_input = sdi;
     gint *intval;
@@ -264,7 +264,7 @@ void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
 
 void decklink_input_sdi(GtkButton *button, decklink_options *option) {
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_hdmi), TRUE);
     option->btn_other = button;
     option->m_input = hdmi;
     gint *intval;

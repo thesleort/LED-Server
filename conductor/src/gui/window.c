@@ -111,5 +111,6 @@ void delete_event_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     stop_cb(option->m_decklink_options->m_stream);
     UNUSED(widget);
     UNUSED(event);
+    pthread_cond_signal(&option->cond);
     gtk_main_quit();
 }

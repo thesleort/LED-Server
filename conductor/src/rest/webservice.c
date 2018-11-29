@@ -27,7 +27,10 @@ void init_rest_api(options *option) {
     // Endpoint list declaration
     ulfius_add_endpoint_by_val(&instance, "GET", "/helloworld", NULL, 0, &callback_hello_world, NULL);
 
-    ulfius_add_endpoint_by_val(&instance, "POST", "/control", "?:foo", 0, &switch_input_cb, option);
+    ulfius_add_endpoint_by_val(&instance, "POST", "/control", "?:foo", 0, &switch_display_cb, option);
+
+    // ulfius_add_endpoint_by_val(&instance, "POST", "/control", "?:foo", 0, &switch_input_cb, option);
+
 
     // g_signal_connect(G_OBJECT(&instance), "switch-page", G_CALLBACK(switch_input_cb), option);
     // Start the framework
@@ -35,7 +38,10 @@ void init_rest_api(options *option) {
         printf("Start framework on port %d\n", instance.port);
 
         // Wait for the user to press <enter> on the console to quit the application
-        getchar();
+        // getchar();
+        pthread_mutex_lock(&option->lock);
+        pthread_cond_wait(&option->cond, &option->lock);
+        // pthread_mutex_unlock(&option->lock);
     } else {
         fprintf(stderr, "Error starting framework\n");
     }
