@@ -6,10 +6,11 @@
 #include <gst/gst.h>
 #include <libconfig.h>
 #include <pthread.h>
+#include <jansson.h>
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 6
-#define VERSION_PATCH 0
+#define VERSION_PATCH 1
 
 #define MAIN_WINDOW "LED Server - Control window"
 #define DISPLAY_WINDOW "LED Server - Display window"
@@ -78,6 +79,10 @@ typedef struct _decklink_options {
     GtkButton *btn_sdi;
 } decklink_options;
 
+typedef struct _webservice{
+    json_t *root;
+} webservice;
+
 typedef struct _options {
     decklink_options *m_decklink_options;
     controls *m_controls;
@@ -85,9 +90,12 @@ typedef struct _options {
     GtkWindow *display_window;
     GtkWindow *control_window;
     gboolean is_display_open;
+    webservice *m_webservice;
     pthread_t thread_webservice;
-    pthread_mutex_t lock;
-    pthread_cond_t cond;
+    pthread_mutex_t start_lock;
+    pthread_mutex_t end_lock;
+    pthread_cond_t start_cond;
+    pthread_cond_t end_cond;
     config_t cfg;
 	char file_cfg[128];
 } options;
