@@ -9,8 +9,8 @@
 #include <jansson.h>
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 6
-#define VERSION_PATCH 1
+#define VERSION_MINOR 7
+#define VERSION_PATCH 0
 
 #define MAIN_WINDOW "LED Server - Control window"
 #define DISPLAY_WINDOW "LED Server - Display window"
@@ -21,7 +21,7 @@
 
 #define UNUSED(x) (void)(x);
 
-enum input { hdmi, sdi };
+enum input { HDMI, SDI };
 
 typedef struct _stream_data {
     gboolean is_live;
@@ -56,6 +56,8 @@ typedef struct _display_settings {
     GtkEntry *entry_pos_y;
     GtkButton *btn_pos_apply;
     GtkLabel *currently_showing;
+
+    int current_tab;
 
     gchar *website_url;
 	WebKitWebView *webview;
@@ -96,6 +98,8 @@ typedef struct _options {
     pthread_mutex_t end_lock;
     pthread_cond_t start_cond;
     pthread_cond_t end_cond;
+    pthread_mutex_t lock;
+    pthread_cond_t cond;
     config_t cfg;
 	char file_cfg[128];
 } options;

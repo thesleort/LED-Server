@@ -13,7 +13,7 @@ CC = gcc
 
 CFLAGS += -std=c11 -lulfius `pkg-config --cflags $(PKG)` -Wall -Wextra -pedantic -g
 
-LDFLAGS += -Llib -lulfius -lpthread
+LDFLAGS += -Llib -lulfius -lpthread -ljansson
 
 LDLIBS += -lm `pkg-config --libs $(PKG)`
 

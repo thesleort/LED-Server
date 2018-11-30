@@ -22,6 +22,8 @@ void tab_webview_cb(GtkButton *button, options *option);
 
 void tab_nextpage_cb(GtkButton *button, options *option);
 
+void update_tab(options *option, int tab);
+
 void save_current_tab(int tab, options *option);
 
 void decklink_input_hdmi(GtkButton *button, decklink_options *option);

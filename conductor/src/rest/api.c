@@ -12,34 +12,47 @@ int callback_hello_world(const struct _u_request *request, struct _u_response *r
 }
 
 int switch_display_cb(const struct _u_request *request, struct _u_response *response, options *option) {
-
-    printf("Lengths: %i, POS: %i\n", request->map_url->nb_values, option->m_display_settings->pos_x);
+    printf("switch_display_cb(...)\n");
+    if(option->m_webservice->root == NULL) {
+        printf("JSON: NULL\n");
+    }
+    // printf("Lengths: %i, POS: %i\n", request->map_url->nb_values, option->m_display_settings->pos_x);
     for (unsigned key = 0; key < request->map_url->nb_values; ++key) {
         if (strcmp(request->map_url->keys[key], "show") == 0) {
 
             if (strcmp(request->map_url->values[key], "next") == 0) {
-                g_idle_add((GSourceFunc) idle_tab_nextpage_cb, option);
-                ulfius_set_string_body_response(response, 200, "showing: next\n");
+                g_idle_add((GSourceFunc)idle_tab_nextpage_cb, option);
+                // printf("Locking2\n");
+                // pthread_mutex_lock(&option->lock);
+                pthread_cond_wait(&option->cond, &option->lock);
+                if (option->m_display_settings->current_tab == 0) {
+                    json_object_set(option->m_webservice->root, "show", json_string("video"));
+                } else if (option->m_display_settings->current_tab == 1) {
+                    json_object_set(option->m_webservice->root, "show", json_string("web"));
+                }
+                pthread_mutex_unlock(&option->lock);
 
             } else if (strcmp(request->map_url->values[key], "web") == 0) {
-                g_idle_add((GSourceFunc) idle_tab_webview_cb, option);
-                ulfius_set_string_body_response(response, 200, "showing: web\n");
+                g_idle_add((GSourceFunc)idle_tab_webview_cb, option);
+                json_object_set(option->m_webservice->root, "show", json_string("web"));
 
             } else if (strcmp(request->map_url->values[key], "video") == 0) {
-                g_idle_add((GSourceFunc) idle_tab_decklink_cb, option);
-                ulfius_set_string_body_response(response, 200, "showing: video\n");
+                g_idle_add((GSourceFunc)idle_tab_decklink_cb, option);
+                json_object_set(option->m_webservice->root, "show", json_string("video"));
             }
         } else if (strcmp(request->map_url->keys[key], "input") == 0) {
 
             if (strcmp(request->map_url->values[key], "hdmi") == 0) {
-                g_idle_add((GSourceFunc) idle_set_input_source_hdmi, option);
-                ulfius_set_string_body_response(response, 200, "input: hdmi\n");
-            } else if(strcmp(request->map_url->values[key], "sdi") == 0) {
-                g_idle_add((GSourceFunc) idle_set_input_source_sdi, option);
-                ulfius_set_string_body_response(response, 200, "input: sdi\n");
+                g_idle_add((GSourceFunc)idle_set_input_source_hdmi, option);
+                json_object_set(option->m_webservice->root, "input", json_string("hdmi"));
+            } else if (strcmp(request->map_url->values[key], "sdi") == 0) {
+                g_idle_add((GSourceFunc)idle_set_input_source_sdi, option);
+                json_object_set(option->m_webservice->root, "input", json_string("sdi"));
             }
         }
     }
+
+                ulfius_set_json_body_response(response, 200, option->m_webservice->root);
     return U_CALLBACK_CONTINUE;
 }
 

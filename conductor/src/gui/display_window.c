@@ -103,6 +103,6 @@ int load_current_page_setting(options *option) {
         fclose(file);
     }
     config_lookup_int(&option->cfg, "tab", &tab);
-
+    option->m_display_settings->current_tab = tab;
     return tab;
 }

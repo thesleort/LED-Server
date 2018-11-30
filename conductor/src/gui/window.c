@@ -57,7 +57,7 @@ void activate(GtkApplication *app, gpointer user_data) {
         // pthread_mutex_init(option->lock, PTHREAD_MUTEX_NORMAL)
         // option->lock = &lock;
 
-        pthread_mutex_lock(&option->start_lock);
+        // pthread_mutex_lock(&option->start_lock);
         webservice_init(option);
 
         // In case config does not exist
@@ -113,7 +113,8 @@ void delete_event_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     stop_cb(option->m_decklink_options->m_stream);
     UNUSED(widget);
     UNUSED(event);
-    pthread_cond_signal(&option->end_cond);
+    // pthread_cond_signal(&option->end_cond);
+    pthread_mutex_lock(&option->end_lock);
     // pthread_cond_wait(&option->end_cond, &option->end_lock);
     gtk_main_quit();
 }
