@@ -51,7 +51,7 @@ gst-launch-1.0 videotestsrc ! decklinkvideosink
 These are the required dependencies to build and run the GUI application.
 
 ```bash
-sudo apt install build-essential libgstreamer1.0-dev libgtk-3-dev libwebkit2gtk-4.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-bad gstreamer1.0-plugins-good libconfig-dev
+sudo apt install build-essential libgstreamer1.0-dev libgtk-3-dev libwebkit2gtk-4.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-bad gstreamer1.0-plugins-good libconfig-dev libulfius-dev libmicrohttpd-dev
 ```
 Blackmagic Decklink Drivers for Linux: [Download](https://www.blackmagicdesign.com/support/family/capture-and-playback)
 

@@ -11,9 +11,9 @@ LIB = $(LDFLAGS)
 
 CC = gcc
 
-CFLAGS += -std=c11 `pkg-config --cflags $(PKG)` -Wall -Wextra -pedantic -g
+CFLAGS += -std=c11 -lulfius `pkg-config --cflags $(PKG)` -Wall -Wextra -pedantic -g
 
-LDFLAGS += -Llib
+LDFLAGS += -Llib -lulfius -lpthread -ljansson
 
 LDLIBS += -lm `pkg-config --libs $(PKG)`
 

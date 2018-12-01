@@ -5,9 +5,11 @@
 #include <webkit2/webkit2.h>
 #include <gst/gst.h>
 #include <libconfig.h>
+#include <pthread.h>
+#include <jansson.h>
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 5
+#define VERSION_MINOR 7
 #define VERSION_PATCH 0
 
 #define MAIN_WINDOW "LED Server - Control window"
@@ -19,7 +21,7 @@
 
 #define UNUSED(x) (void)(x);
 
-enum input { hdmi, sdi };
+enum input { HDMI, SDI };
 
 typedef struct _stream_data {
     gboolean is_live;
@@ -55,6 +57,8 @@ typedef struct _display_settings {
     GtkButton *btn_pos_apply;
     GtkLabel *currently_showing;
 
+    int current_tab;
+
     gchar *website_url;
 	WebKitWebView *webview;
     WebKitSettings *web_settings;
@@ -77,6 +81,10 @@ typedef struct _decklink_options {
     GtkButton *btn_sdi;
 } decklink_options;
 
+typedef struct _webservice{
+    json_t *root;
+} webservice;
+
 typedef struct _options {
     decklink_options *m_decklink_options;
     controls *m_controls;
@@ -84,6 +92,14 @@ typedef struct _options {
     GtkWindow *display_window;
     GtkWindow *control_window;
     gboolean is_display_open;
+    webservice *m_webservice;
+    pthread_t thread_webservice;
+    pthread_mutex_t start_lock;
+    pthread_mutex_t end_lock;
+    pthread_cond_t start_cond;
+    pthread_cond_t end_cond;
+    pthread_mutex_t lock;
+    pthread_cond_t cond;
     config_t cfg;
 	char file_cfg[128];
 } options;

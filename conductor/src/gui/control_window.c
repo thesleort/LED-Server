@@ -69,7 +69,7 @@ void projector_settings_add(GtkGrid *decklink_options, options *option) {
     decklink_label_desc = GTK_LABEL(gtk_label_new("Choose Decklink card input:"));
     decklink_label_current_input = GTK_LABEL(gtk_label_new("Current input: SDI"));
 
-    option->m_decklink_options->m_input = sdi;
+    option->m_decklink_options->m_input = SDI;
     option->m_decklink_options->btn_other = btn_sdi;
     option->m_decklink_options->label_current_input = decklink_label_current_input;
     option->m_decklink_options->btn_hdmi = btn_hdmi;
@@ -179,7 +179,7 @@ void controls_add(GtkBox *controls_box, options *option) {
 void about_info_add(GtkGrid *grid) {
     GtkLabel *label_version;
 
-    char version_string[64];
+    char version_string[16];
 
     sprintf(version_string, "v%i.%i.%i", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
 
@@ -212,6 +212,16 @@ void tab_nextpage_cb(GtkButton *button, options *option) {
         gtk_notebook_next_page(option->m_display_settings->tab);
         save_current_tab(gtk_notebook_get_current_page(option->m_display_settings->tab), option);
     }
+    pthread_t service;
+    pthread_create(&service, NULL, update_tab, option->m_display_settings);
+
+}
+
+void update_tab(options *option, int tab) {
+    pthread_mutex_lock(&option->lock);
+    option->m_display_settings->current_tab = tab;
+    pthread_mutex_unlock(&option->lock);
+    pthread_cond_signal(&option->cond);
 }
 
 void save_current_tab(int tab, options *option) {
@@ -246,10 +256,13 @@ void window_decoration_toggle_cb(GtkButton *button, display_settings *tab) {
 }
 
 void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
+    if(option->m_input == HDMI) {
+        return;
+    }
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_sdi), TRUE);
     option->btn_other = button;
-    option->m_input = sdi;
+    option->m_input = HDMI;
     gint *intval;
     GstElement *cap;
     cap = gst_bin_get_by_name(GST_BIN(option->m_stream->pipeline), "source");
@@ -263,10 +276,13 @@ void decklink_input_hdmi(GtkButton *button, decklink_options *option) {
 }
 
 void decklink_input_sdi(GtkButton *button, decklink_options *option) {
+    if(option->m_input == SDI) {
+        return;
+    }
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_other), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(option->btn_hdmi), TRUE);
     option->btn_other = button;
-    option->m_input = hdmi;
+    option->m_input = SDI;
     gint *intval;
     GstElement *cap;
     cap = gst_bin_get_by_name(GST_BIN(option->m_stream->pipeline), "source");

@@ -5,7 +5,7 @@
 
 #include <libconfig.h>
 #include <glib.h>
-typedef void (*FPtr)(void);
+
 void display_window_init(GtkWidget *window, options *option) {
     GtkNotebook *tab = option->m_display_settings->tab;
 
@@ -74,6 +74,7 @@ void switch_tab_cb(GtkNotebook *notebook, GtkWidget *page, guint page_num, optio
     case 0:
         printf("page: 0\n");
         play_cb(option->m_decklink_options->m_stream);
+
         webkit_web_view_run_javascript(option->m_display_settings->webview, option->m_display_settings->webview_pause_script, NULL, finish, NULL);
         break;
     case 1:
@@ -102,6 +103,6 @@ int load_current_page_setting(options *option) {
         fclose(file);
     }
     config_lookup_int(&option->cfg, "tab", &tab);
-
+    option->m_display_settings->current_tab = tab;
     return tab;
 }
