@@ -6,10 +6,11 @@
 #include "options.h"
 #include "rest/webservice.h"
 
+
 int main(int argc, char **argv) {
     GtkApplication *app;
     int status;
-
+	close_app = NULL;
     printf("Conductor v%i.%i.%i\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
 
     app = gtk_application_new("led.server.conductor", G_APPLICATION_FLAGS_NONE);
@@ -17,7 +18,6 @@ int main(int argc, char **argv) {
     status = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);
     gst_init(&argc, &argv);
-
     return status;
 }
 
@@ -45,6 +45,7 @@ void activate(GtkApplication *app, gpointer user_data) {
         option->m_decklink_options = d_option;
         option->m_display_settings = display;
         option->m_decklink_options->m_stream = &stream;
+		option->app = app;
 
         sprintf(option->file_cfg, "%s/.config/conductor/%s", getenv("HOME"), CONFIG_FILE);
         config_init(&option->cfg);
@@ -57,7 +58,7 @@ void activate(GtkApplication *app, gpointer user_data) {
         // pthread_mutex_init(option->lock, PTHREAD_MUTEX_NORMAL)
         // option->lock = &lock;
 
-        // pthread_mutex_lock(&option->start_lock);
+	// pthread_mutex_lock(&option->end_lock);
         webservice_init(option);
 
         // In case config does not exist
@@ -102,8 +103,7 @@ void activate(GtkApplication *app, gpointer user_data) {
         display_window_init(display_window, option);
 
         gtk_window_set_application(GTK_WINDOW(control_window), app);
-        // pthread_cond_signal(&option->start_cond);
-        printf("----- Main started\n");
+        printf("Main started\n");
         gtk_main();
     }
 }
@@ -113,8 +113,9 @@ void delete_event_cb(GtkWidget *widget, GdkEvent *event, options *option) {
     stop_cb(option->m_decklink_options->m_stream);
     UNUSED(widget);
     UNUSED(event);
-    // pthread_cond_signal(&option->end_cond);
-    pthread_mutex_lock(&option->end_lock);
-    // pthread_cond_wait(&option->end_cond, &option->end_lock);
+	g_cond_signal(&option->webservice_cond);
+	g_thread_join(option->thread_webservice);
+
     gtk_main_quit();
+	g_application_quit(option->app);
 }

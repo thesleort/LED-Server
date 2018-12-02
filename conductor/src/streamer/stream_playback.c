@@ -78,7 +78,7 @@ void decklink_stream_gst(options *option) {
 
 
 
-    g_signal_connect (G_OBJECT (data->source), "video-tags-changed", (GCallback) tags_cb, &data);
+    // g_signal_connect (G_OBJECT (data->source), "video-tags-changed", (GCallback) tags_cb, &data);
 
     /* Register a function that GLib will call every second */
     g_timeout_add_seconds(1, (GSourceFunc)refresh_ui, &data);
