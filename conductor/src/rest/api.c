@@ -6,24 +6,22 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-int callback_hello_world(const struct _u_request *request, struct _u_response *response, void *user_data) {
-    ulfius_set_string_body_response(response, 200, "Hello World!");
-    return U_CALLBACK_CONTINUE;
-}
+// int callback_hello_world(const struct _u_request *request, struct _u_response *response, void *user_data) {
+//     ulfius_set_string_body_response(response, 200, "Hello World!");
+//     return U_CALLBACK_CONTINUE;
+// }
 
-int switch_display_cb(const struct _u_request *request, struct _u_response *response, options *option) {
+int option_post_cb(const struct _u_request *request, struct _u_response *response, options *option) {
     printf("switch_display_cb(...)\n");
     if(option->m_webservice->root == NULL) {
         printf("JSON: NULL\n");
     }
-    // printf("Lengths: %i, POS: %i\n", request->map_url->nb_values, option->m_display_settings->pos_x);
-    for (unsigned key = 0; key < request->map_url->nb_values; ++key) {
+
+    for (int key = 0; key < request->map_url->nb_values; ++key) {
         if (strcmp(request->map_url->keys[key], "show") == 0) {
 
             if (strcmp(request->map_url->values[key], "next") == 0) {
                 g_idle_add((GSourceFunc)idle_tab_nextpage_cb, option);
-                // printf("Locking2\n");
-                // pthread_mutex_lock(&option->lock);
                 pthread_cond_wait(&option->cond, &option->lock);
                 if (option->m_display_settings->current_tab == 0) {
                     json_object_set(option->m_webservice->root, "show", json_string("video"));
@@ -56,31 +54,31 @@ int switch_display_cb(const struct _u_request *request, struct _u_response *resp
     return U_CALLBACK_CONTINUE;
 }
 
-int example_cb(const struct _u_request *request, struct _u_response *response, options *option) {
-    // char *url_params = print_map(request->map_url), *headers = print_map(request->map_header), *cookies = print_map(request->map_cookie),
-    //      *post_params = print_map(request->map_post_body);
+// int example_cb(const struct _u_request *request, struct _u_response *response, options *option) {
+//     // char *url_params = print_map(request->map_url), *headers = print_map(request->map_header), *cookies = print_map(request->map_cookie),
+//     //      *post_params = print_map(request->map_post_body);
 
-    // char *response_body = sprintf("Hello World!\n\n  method is %s\n  url is %s\n\n  parameters from the url are \n%s\n\n  cookies are \n%s\n\n  headers are \n%s\n\n  post parameters are \n%s\n\n  user data is %s\n\n",
-    //
-    // char *user_data;
+//     // char *response_body = sprintf("Hello World!\n\n  method is %s\n  url is %s\n\n  parameters from the url are \n%s\n\n  cookies are \n%s\n\n  headers are \n%s\n\n  post parameters are \n%s\n\n  user data is %s\n\n",
+//     //
+//     // char *user_data;
 
-    char *url_params = print_map(request->map_url);
-    char *headers = print_map(request->map_header);
-    char *cookies = print_map(request->map_cookie);
-    char *post_params = print_map(request->map_post_body);
+//     char *url_params = print_map(request->map_url);
+//     char *headers = print_map(request->map_header);
+//     char *cookies = print_map(request->map_cookie);
+//     char *post_params = print_map(request->map_post_body);
 
-    char buffer[512];
-    char *response_body = sprintf(buffer, "Hello World!\n\n  method is %s\n  url is %s\n\n  parameters from the url are \n%s\n\n  cookies are \n%s\n\n  headers are \n%s\n\n  post parameters are \n%s\n\n",
-                                  request->http_verb, request->http_url, url_params, cookies, headers, post_params);
-    // char *response_body = sprintf("Page switched\n", user_data);
+//     char buffer[512];
+//     char *response_body = sprintf(buffer, "Hello World!\n\n  method is %s\n  url is %s\n\n  parameters from the url are \n%s\n\n  cookies are \n%s\n\n  headers are \n%s\n\n  post parameters are \n%s\n\n",
+//                                   request->http_verb, request->http_url, url_params, cookies, headers, post_params);
+//     // char *response_body = sprintf("Page switched\n", user_data);
 
-    printf("%s\n", buffer);
+//     printf("%s\n", buffer);
 
-    ulfius_set_string_body_response(response, 200, "response_body\n");
-    free(url_params);
-    // free(response_body);
-    return U_CALLBACK_CONTINUE;
-}
+//     ulfius_set_string_body_response(response, 200, "response_body\n");
+//     free(url_params);
+//     // free(response_body);
+//     return U_CALLBACK_CONTINUE;
+// }
 
 char *print_map(const struct _u_map *map) {
     char *line, *to_return = NULL;

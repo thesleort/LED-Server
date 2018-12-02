@@ -52,13 +52,7 @@ void activate(GtkApplication *app, gpointer user_data) {
 
         printf("Config: %s\n", option->file_cfg);
         FILE *file = fopen(option->file_cfg, "r+");
-
-        // pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-
-        // pthread_mutex_init(option->lock, PTHREAD_MUTEX_NORMAL)
-        // option->lock = &lock;
-
-	// pthread_mutex_lock(&option->end_lock);
+		
         webservice_init(option);
 
         // In case config does not exist
