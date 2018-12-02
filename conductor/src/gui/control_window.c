@@ -212,8 +212,14 @@ void tab_nextpage_cb(GtkButton *button, options *option) {
         gtk_notebook_next_page(option->m_display_settings->tab);
         save_current_tab(gtk_notebook_get_current_page(option->m_display_settings->tab), option);
     }
-    pthread_t service;
-    pthread_create(&service, NULL, update_tab, option->m_display_settings);
+
+    pthread_mutex_lock(&option->lock);
+    option->m_display_settings->current_tab = gtk_notebook_get_current_page(option->m_display_settings->tab);
+    pthread_cond_signal(&option->cond);
+    pthread_mutex_unlock(&option->lock);
+
+    // pthread_t service;
+    // pthread_create(&service, NULL, update_tab, option->m_display_settings);
 
 }
 

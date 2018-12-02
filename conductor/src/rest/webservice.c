@@ -7,19 +7,24 @@
 
 void webservice_init(options *option) {
     printf("TEST\n");
-    if(pthread_create(&option->thread_webservice, NULL, init_rest_api, option)) {
-        fprintf(stderr, "Error creating thread\n");
-        return;
-    }
+    // if(pthread_create(&option->thread_webservice, NULL, init_rest_api, option)) {
+    //     fprintf(stderr, "Error creating thread\n");
+    //     return;
+    // }
+    g_mutex_init(&option->webservice_lock);
+    g_cond_init(&option->webservice_cond);
+
+    option->thread_webservice = g_thread_new("webservice", init_rest_api, option);
 }
 
 void webservice_destroy(pthread_t webservice) {
 }
 
 void init_rest_api(options *option) {
+    // pthread_mutex_lock(&option->webservice_lock);
     struct _u_instance instance;
 
-    option->m_webservice = (webservice*)malloc(sizeof(webservice));
+    option->m_webservice = (webservice *)malloc(sizeof(webservice));
 
     init_json(&option->cfg, option);
     // pthread_mutex_lock(&option->lock);
@@ -36,16 +41,21 @@ void init_rest_api(options *option) {
 
     // ulfius_add_endpoint_by_val(&instance, "POST", "/control", "?:foo", 0, &switch_input_cb, option);
 
-
     // g_signal_connect(G_OBJECT(&instance), "switch-page", G_CALLBACK(switch_input_cb), option);
     // Start the framework
     if (ulfius_start_framework(&instance) == U_OK) {
         printf("::Start framework on port %d\n", instance.port);
 
         // Wait for the user to press <enter> on the console to quit the application
-        getchar();
+        // getchar();
         // pthread_cond_wait(&option->end_cond, &option->end_lock);
         // pthread_mutex_lock(&option->end_lock);
+        // pthread_mutex_lock(&option->end_lock);
+        // pthread_cond_wait(&option->webservice_cond, &option->webservice_lock);
+        g_mutex_lock(&option->webservice_lock);
+        // g_mutex_lock(&option->webservice_lock2);
+        g_cond_wait(&option->webservice_cond, &option->webservice_lock);
+
     } else {
         fprintf(stderr, "Error starting framework\n");
     }
@@ -53,11 +63,6 @@ void init_rest_api(options *option) {
     ulfius_stop_framework(&instance);
     ulfius_clean_instance(&instance);
     printf("::End framework\n");
-
-    // pthread_cond_signal(&option->end_cond);
-    pthread_mutex_unlock(&option->end_lock);
-
-    return;
 }
 
 void init_json(config_t *cfg, options *option) {
@@ -65,9 +70,8 @@ void init_json(config_t *cfg, options *option) {
 
     int tab;
     printf("test\n");
-    config_lookup_int(&cfg, "tab", &tab);
-    if(tab == 0)
-    {
+    config_lookup_int(cfg, "tab", &tab);
+    if (tab == 0) {
         json_object_set_new(option->m_webservice->root, "show", json_string("video"));
     } else if (tab == 1) {
         json_object_set_new(option->m_webservice->root, "show", json_string("web"));

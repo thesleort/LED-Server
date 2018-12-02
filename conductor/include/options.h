@@ -10,7 +10,7 @@
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 7
-#define VERSION_PATCH 0
+#define VERSION_PATCH 1
 
 #define MAIN_WINDOW "LED Server - Control window"
 #define DISPLAY_WINDOW "LED Server - Display window"
@@ -20,6 +20,8 @@
 #define CONFIG_FILE "conductor.cfg"
 
 #define UNUSED(x) (void)(x);
+
+static volatile int close_app;
 
 enum input { HDMI, SDI };
 
@@ -86,6 +88,7 @@ typedef struct _webservice{
 } webservice;
 
 typedef struct _options {
+	GtkApplication *app;
     decklink_options *m_decklink_options;
     controls *m_controls;
     display_settings *m_display_settings;
@@ -93,11 +96,9 @@ typedef struct _options {
     GtkWindow *control_window;
     gboolean is_display_open;
     webservice *m_webservice;
-    pthread_t thread_webservice;
-    pthread_mutex_t start_lock;
-    pthread_mutex_t end_lock;
-    pthread_cond_t start_cond;
-    pthread_cond_t end_cond;
+    GThread *thread_webservice;
+    GMutex *webservice_lock;
+    GCond *webservice_cond;
     pthread_mutex_t lock;
     pthread_cond_t cond;
     config_t cfg;
