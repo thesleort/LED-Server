@@ -3,6 +3,7 @@
 #include <webkit2/webkit2.h>
 
 #include "streamer/stream_playback.h"
+#include "broadcast/htmloverlay.h"
 
 void decklink_stream_gst(options *option) {
     stream_data *data = option->m_decklink_options->m_stream;
@@ -18,15 +19,18 @@ void decklink_stream_gst(options *option) {
     data->duration = GST_CLOCK_TIME_NONE;
     printf("Gst element init\n");
 
-    data->source = gst_element_factory_make("decklinkvideosrc", "source");
+    // data->source = gst_element_factory_make("decklinkvideosrc", "source");
+	data->source = gst_element_factory_make("videotestsrc", "test");
+	data->broadcast_overlay = gst_element_factory_make("cairooverlay", "broadcast_graphics");
     data->tee = gst_element_factory_make("tee", "tee");
     data->display_queue = gst_element_factory_make("queue", "display_queue");
     data->preview_queue = gst_element_factory_make("queue", "preview_queue");
     data->display_convert = gst_element_factory_make("videoconvert", "display_convert");
     data->preview_convert = gst_element_factory_make("videoconvert", "preview_convert");
+    data->preview_convert2 = gst_element_factory_make("videoconvert", "preview_convert2");
     data->display_sink = gst_element_factory_make("xvimagesink", "display_sink");
     data->preview_sink = gst_element_factory_make("xvimagesink", "preview_sink");
-
+    printf("%p\n", &data->broadcast_overlay);
     g_object_set(data->source, "connection", 1, NULL);
     g_object_set(data->source, "mode", 0, NULL);
 
@@ -64,7 +68,9 @@ void decklink_stream_gst(options *option) {
         gst_object_unref(data->pipeline);
         return;
     }
-    gst_bin_add_many(data->pipeline, data->source, data->tee, data->display_queue, data->preview_queue, data->display_convert, data->preview_convert, data->display_sink, data->preview_sink, NULL);
+    // gst_bin_add_many(data->pipeline, data->source, data->tee, data->display_queue, data->preview_queue, data->display_convert, data->preview_convert, data->display_sink, data->preview_sink, NULL);
+    gst_bin_add_many(data->pipeline, data->source, data->tee, data->display_queue, data->broadcast_overlay, data->preview_queue, data->display_convert, data->preview_convert,data->preview_convert2, data->display_sink, data->preview_sink, NULL);
+
     gst_element_link(data->source, data->tee);
 
 
@@ -73,9 +79,13 @@ void decklink_stream_gst(options *option) {
     gst_element_link(data->display_convert, data->display_sink);
 
     gst_element_link(data->tee, data->preview_queue);
-    gst_element_link(data->preview_queue, data->preview_convert);
-    gst_element_link(data->preview_convert, data->preview_sink);
+	gst_element_link(data->preview_queue, data->preview_convert);
+    gst_element_link(data->preview_convert, data->broadcast_overlay);
+	gst_element_link(data->broadcast_overlay, data->preview_convert2);
+    gst_element_link(data->preview_convert2, data->preview_sink);
+	// gst_element_link(data->preview_convert, data->preview_sink);
 
+	add_html_overlay(data->broadcast_overlay);
 
 
     // g_signal_connect (G_OBJECT (data->source), "video-tags-changed", (GCallback) tags_cb, &data);
@@ -110,6 +120,17 @@ void setup_stream_ui(GtkGrid *grid, GtkWindow *window, stream_data *data) {
         g_signal_connect(video_area, "realize", G_CALLBACK(realize_cb), data->display_sink);
     }
     g_signal_connect(video_area, "draw", G_CALLBACK(draw_cb), data);
+
+	// CairoOverlayState *s = (CairoOverlayState *)malloc(sizeof(CairoOverlayState));
+    // WebKitWebView *webview;
+    // cairo_t *graphics_surface;
+
+    // s->height = 896;
+    // s->width = 512;
+    // g_signal_connect(data->broadcast_overlay, "draw", G_CALLBACK(draw_overlay), &s);
+
+	printf("added draw\n");
+
 }
 
 /*

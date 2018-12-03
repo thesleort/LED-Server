@@ -30,16 +30,17 @@ typedef struct _stream_data {
     GstBin *pipeline;
 	GstElement *source;
 	GstElement *tee;
+	GstElement *broadcast_overlay;
     GstElement *display_queue;
     GstElement *preview_queue;
 	GstElement *display_convert;
     GstElement *preview_convert;
+	GstElement *preview_convert2;
 	GstElement *display_sink;
 	GstElement *preview_sink;
     GMainLoop *loop;
     GstState state; /* Current state of the pipeline */
     gint64 duration;
-
 } stream_data;
 
 typedef struct _controls {
